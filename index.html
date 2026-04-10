@@ -19,116 +19,130 @@
   body { font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', 'Segoe UI', sans-serif; }
   .header-title, .card-name, .modal-title, .detail-header-title, .stat-num,
   .detail-header-title, .prov-label { font-family: Georgia, 'Times New Roman', serif; }
+
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--white,#FFFFFF);border-top:1px solid var(--rule,#E5E0D8);display:flex;height:64px;z-index:200;padding-bottom:env(safe-area-inset-bottom)}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;cursor:pointer;border:none;background:transparent;padding:8px 4px;position:relative;color:var(--sand,#C9B99A);transition:color .15s;-webkit-tap-highlight-color:transparent}
+.nav-item.active{color:var(--forge,#C4530A)}
+.nav-item.active::before{content:'';position:absolute;top:0;left:25%;right:25%;height:1.5px;background:var(--forge,#C4530A);border-radius:0 0 2px 2px}
+.nav-item svg{width:18px;height:18px;stroke:currentColor}
+.nav-label{font-family:'DM Sans',-apple-system,sans-serif;font-size:9px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:inherit;line-height:1}
+
+.hdr,.header{background:var(--white,#FFFFFF);border-bottom:1px solid var(--rule,#E5E0D8);padding:1.2rem 1.5rem;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between}
+.hdr-mark,.header-mark{display:flex;flex-direction:column;gap:1px}
+.hdr-the,.header-the{font-family:'DM Sans',-apple-system,sans-serif;font-size:9px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--forge,#C4530A);line-height:1}
+.hdr-name,.header-name{font-family:'Cormorant Garamond','Cormorant Garamond',Georgia,serif;font-size:17px;font-weight:400;letter-spacing:.1em;text-transform:uppercase;color:var(--ink,#1A1410);line-height:1}
+.hdr-sub,.header-sub{font-size:10px;font-weight:400;letter-spacing:.12em;text-transform:uppercase;color:var(--sand,#C9B99A)}
+.header-title{display:none}
 </style>
 <style>
-:root{--ink:#1a1612;--parchment:#f5f0e8;--cream:#faf7f2;--timber:#b5723a;--timber-light:#e8d5bd;--timber-dark:#7a4520;--sage:#7a8c72;--sage-light:#e4ebe2;--dust:#c8bfb0;--red:#c44b2b;--amber:#d4922a;--amber-light:#fef3e2;--blue:#4a7fa5;--blue-light:#e8f0f7;--purple:#7a5fa5;--purple-light:#ede8f5}
+:root{--ink:#1A1410;--off-white:#FAF9F7;--off-white:#FAF9F7;--forge:#C4530A;--rule:#E5E0D8;--forge-deep:#9A3D06;--sand:#C9B99A;--forge-pale:#FEF5EF;--sand:#C9B99A;--red:#C4530A;--amber:#C4530A;--amber-light:#fef3e2;--blue:#4a7fa5;--blue-light:#e8f0f7;--purple:#7a5fa5;--purple-light:#ede8f5}
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;padding-bottom:88px;overflow-x:hidden}
-.header{background:var(--ink);padding:14px 18px 12px;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between}
-.header-title{font-family:Georgia,'Times New Roman',serif;font-size:18px;color:var(--parchment)}
-.header-sub{font-size:10px;color:var(--dust);letter-spacing:.1em;text-transform:uppercase;margin-top:2px}
-.header-add{background:var(--timber);color:white;border:none;width:34px;height:34px;border-radius:50%;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;background:var(--white);color:var(--ink);min-height:100vh;padding-bottom:88px;overflow-x:hidden}
+
+
+
+.header-add{background:var(--forge);color:white;border:none;width:34px;height:34px;border-radius:50%;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .view{display:none}.view.active{display:block}
-.section-label{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--timber);margin:14px 16px 10px;display:flex;align-items:center;gap:8px}
-.section-label::after{content:'';flex:1;height:1px;background:var(--timber-light)}
+.section-label{font-size:10px;font-weight:500;letter-spacing:.14em;text-transform:uppercase;color:var(--forge);margin:14px 16px 10px;display:flex;align-items:center;gap:8px}
+.section-label::after{content:'';flex:1;height:1px;background:var(--rule)}
 .stats-row{display:grid;gap:8px;padding:12px 16px 6px}
 .s4{grid-template-columns:repeat(4,1fr)}.s3{grid-template-columns:repeat(3,1fr)}
-.stat{background:white;border-radius:10px;padding:10px 8px;text-align:center;border:1px solid var(--timber-light)}
-.stat-num{font-family:Georgia,'Times New Roman',serif;font-size:20px;color:var(--timber);line-height:1}
+.stat{background:white;border-radius:10px;padding:10px 8px;text-align:center;border:1px solid var(--rule)}
+.stat-num{font-family:Georgia,'Times New Roman',serif;font-size:20px;color:var(--forge);line-height:1}
 .stat-label{font-size:9px;color:#999;letter-spacing:.06em;text-transform:uppercase;margin-top:3px}
 .filter-row{display:flex;gap:8px;padding:6px 16px 4px;overflow-x:auto;scrollbar-width:none}
-.chip{background:white;border:1.5px solid var(--timber-light);color:var(--ink);font-size:12px;font-weight:500;padding:5px 13px;border-radius:20px;white-space:nowrap;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;transition:all .15s;flex-shrink:0}
-.chip.active{background:var(--ink);border-color:var(--ink);color:var(--parchment)}
+.chip{background:white;border:1.5px solid var(--rule);color:var(--ink);font-size:12px;font-weight:500;padding:5px 13px;border-radius:20px;white-space:nowrap;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;transition:all .15s;flex-shrink:0}
+.chip.active{background:var(--ink);border-color:var(--ink);color:var(--off-white)}
 .cards{padding:0 16px 8px}
-.card{background:white;border-radius:14px;border:1px solid var(--timber-light);margin-bottom:12px;overflow:hidden;cursor:pointer;transition:transform .15s}
+.card{background:white;border-radius:14px;border:1px solid var(--rule);margin-bottom:12px;overflow:hidden;cursor:pointer;transition:transform .15s}
 .card:active{transform:scale(.98)}
 .card-img{width:100%;height:140px;object-fit:cover;display:block}
-.card-img-ph{width:100%;height:80px;background:linear-gradient(135deg,var(--parchment),var(--timber-light));display:flex;align-items:center;justify-content:center;font-size:32px}
+.card-img-ph{width:100%;height:80px;background:linear-gradient(135deg,var(--off-white),var(--rule));display:flex;align-items:center;justify-content:center;font-size:32px}
 .card-body{padding:13px 15px 10px}
 .card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:5px}
 .card-name{font-family:Georgia,'Times New Roman',serif;font-size:15px;line-height:1.3;flex:1}
 .card-sub{font-size:12px;color:#888;margin-bottom:7px}
 .card-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
-.tag{font-size:11px;padding:3px 8px;border-radius:6px;font-weight:500;background:var(--parchment);color:var(--timber-dark)}
-.tag.green{background:var(--sage-light);color:var(--sage)}.tag.amber{background:var(--amber-light);color:var(--amber)}.tag.red{background:#fdecea;color:var(--red)}.tag.blue{background:var(--blue-light);color:var(--blue)}.tag.purple{background:var(--purple-light);color:var(--purple)}.tag.grey{background:#f0f0f0;color:#888}
-.card-footer{border-top:1px solid var(--parchment);padding:9px 15px;display:flex;align-items:center;justify-content:space-between}
+.tag{font-size:11px;padding:3px 8px;border-radius:6px;font-weight:500;background:var(--off-white);color:var(--forge-deep)}
+.tag.green{background:var(--forge-pale);color:var(--sand)}.tag.amber{background:var(--amber-light);color:var(--amber)}.tag.red{background:#fdecea;color:var(--red)}.tag.blue{background:var(--blue-light);color:var(--blue)}.tag.purple{background:var(--purple-light);color:var(--purple)}.tag.grey{background:#f0f0f0;color:#888}
+.card-footer{border-top:1px solid var(--off-white);padding:9px 15px;display:flex;align-items:center;justify-content:space-between}
 .card-footer-left{font-size:11px;color:#aaa}
 .card-btns{display:flex;gap:6px}
-.btn-sm{background:var(--parchment);border:none;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-size:12px;font-weight:500;padding:6px 12px;cursor:pointer;color:var(--ink)}
-.btn-sm.dark{background:var(--ink);color:var(--parchment)}.btn-sm.timber{background:var(--timber);color:white}
+.btn-sm{background:var(--off-white);border:none;border-radius:8px;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-size:12px;font-weight:500;padding:6px 12px;cursor:pointer;color:var(--ink)}
+.btn-sm.dark{background:var(--ink);color:var(--off-white)}.btn-sm.timber{background:var(--forge);color:white}
 .badge{font-size:11px;font-weight:500;padding:3px 10px;border-radius:20px;white-space:nowrap;flex-shrink:0}
-.badge.available{background:var(--sage-light);color:var(--sage)}.badge.reserved{background:var(--amber-light);color:var(--amber)}.badge.in-use{background:var(--blue-light);color:var(--blue)}.badge.complete{background:#f0f0f0;color:#888}
-.badge.prospect{background:var(--amber-light);color:var(--amber)}.badge.active-client{background:var(--blue-light);color:var(--blue)}.badge.closed-won{background:var(--sage-light);color:var(--sage)}.badge.closed-lost{background:#f0f0f0;color:#888}
-.badge.certified{background:var(--sage-light);color:var(--sage)}.badge.pending{background:var(--amber-light);color:var(--amber)}.badge.none{background:#f0f0f0;color:#aaa}
+.badge.available{background:var(--forge-pale);color:var(--sand)}.badge.reserved{background:var(--amber-light);color:var(--amber)}.badge.in-use{background:var(--blue-light);color:var(--blue)}.badge.complete{background:#f0f0f0;color:#888}
+.badge.prospect{background:var(--amber-light);color:var(--amber)}.badge.active-client{background:var(--blue-light);color:var(--blue)}.badge.closed-won{background:var(--forge-pale);color:var(--sand)}.badge.closed-lost{background:#f0f0f0;color:#888}
+.badge.certified{background:var(--forge-pale);color:var(--sand)}.badge.pending{background:var(--amber-light);color:var(--amber)}.badge.none{background:#f0f0f0;color:#aaa}
 .badge.prospect{background:#f0f0f0;color:#aaa}.badge.inactive{background:#f0f0f0;color:#ccc}
-.stock-divider{background:var(--parchment);padding:8px 16px;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--timber-dark);display:flex;align-items:center;gap:8px}
-.sub-tabs{display:flex;border-bottom:1px solid var(--timber-light);background:white}
+.stock-divider{background:var(--off-white);padding:8px 16px;font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--forge-deep);display:flex;align-items:center;gap:8px}
+.sub-tabs{display:flex;border-bottom:1px solid var(--rule);background:white}
 .sub-tab{flex:1;padding:11px 8px;text-align:center;font-size:12px;font-weight:500;color:#aaa;cursor:pointer;border:none;background:none;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;border-bottom:2px solid transparent;margin-bottom:-1px}
-.sub-tab.active{color:var(--timber);border-bottom-color:var(--timber)}
-.stage-bar{height:4px;background:var(--parchment);border-radius:2px;overflow:hidden;margin:6px 0 3px}
-.stage-fill{height:100%;background:var(--timber);border-radius:2px}
+.sub-tab.active{color:var(--forge);border-bottom-color:var(--forge)}
+.stage-bar{height:4px;background:var(--off-white);border-radius:2px;overflow:hidden;margin:6px 0 3px}
+.stage-fill{height:100%;background:var(--forge);border-radius:2px}
 .stage-label{font-size:11px;color:#aaa}
 .detail-header{background:var(--ink);padding:14px 18px;display:flex;align-items:center;gap:12px}
-.detail-back{background:none;border:none;color:var(--parchment);font-size:22px;cursor:pointer;line-height:1}
-.detail-header-title{font-family:Georgia,'Times New Roman',serif;font-size:16px;color:var(--parchment);flex:1;line-height:1.2}
+.detail-back{background:none;border:none;color:var(--off-white);font-size:22px;cursor:pointer;line-height:1}
+.detail-header-title{font-family:Georgia,'Times New Roman',serif;font-size:16px;color:var(--off-white);flex:1;line-height:1.2}
 .detail-body{padding:16px}
 .detail-section{margin-bottom:18px}
-.detail-section-title{font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--timber);margin-bottom:9px}
+.detail-section-title{font-size:10px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--forge);margin-bottom:9px}
 .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.detail-field{background:white;border-radius:10px;padding:10px;border:1px solid var(--timber-light)}
+.detail-field{background:white;border-radius:10px;padding:10px;border:1px solid var(--rule)}
 .detail-field-label{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:.08em;margin-bottom:3px}
 .detail-field-value{font-size:13px;font-weight:500}
-.detail-notes{background:white;border-radius:10px;padding:13px;border:1px solid var(--timber-light);font-size:13px;line-height:1.7;color:#444}
-.prov-chain{background:white;border-radius:10px;border:1px solid var(--timber-light);overflow:hidden}
-.prov-step{padding:10px 13px;display:flex;align-items:flex-start;gap:12px;border-bottom:1px solid var(--parchment)}
+.detail-notes{background:white;border-radius:10px;padding:13px;border:1px solid var(--rule);font-size:13px;line-height:1.7;color:#444}
+.prov-chain{background:white;border-radius:10px;border:1px solid var(--rule);overflow:hidden}
+.prov-step{padding:10px 13px;display:flex;align-items:flex-start;gap:12px;border-bottom:1px solid var(--off-white)}
 .prov-step:last-child{border-bottom:none}
 .prov-dot{width:10px;height:10px;border-radius:50%;margin-top:3px;flex-shrink:0}
-.prov-dot.done{background:var(--sage)}.prov-dot.active{background:var(--timber)}.prov-dot.pending{background:var(--dust)}
+.prov-dot.done{background:var(--sand)}.prov-dot.active{background:var(--forge)}.prov-dot.pending{background:var(--sand)}
 .prov-label{font-size:13px;font-weight:500}.prov-sub{font-size:11px;color:#999;margin-top:2px}
 .detail-actions{display:flex;gap:10px;margin-top:18px}
 .btn-full{flex:1;border:none;border-radius:12px;padding:13px;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-size:14px;font-weight:500;cursor:pointer}
-.btn-full.primary{background:var(--timber);color:white}.btn-full.secondary{background:white;color:var(--ink);border:1.5px solid var(--timber-light)}.btn-full.dark{background:var(--ink);color:var(--parchment)}
+.btn-full.primary{background:var(--forge);color:white}.btn-full.secondary{background:white;color:var(--ink);border:1.5px solid var(--rule)}.btn-full.dark{background:var(--ink);color:var(--off-white)}
 .modal-overlay{position:fixed;inset:0;background:rgba(26,22,18,.65);z-index:300;display:none;align-items:flex-end}
 .modal-overlay.open{display:flex}
 .modal{background:white;border-radius:20px 20px 0 0;width:100%;max-height:92vh;overflow-y:auto;padding:18px 18px 50px}
-.modal-handle{width:36px;height:4px;background:var(--dust);border-radius:2px;margin:0 auto 18px}
+.modal-handle{width:36px;height:4px;background:var(--sand);border-radius:2px;margin:0 auto 18px}
 .modal-title{font-family:Georgia,'Times New Roman',serif;font-size:20px;margin-bottom:18px}
-.modal-section{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--timber);margin:16px 0 10px}
+.modal-section{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--forge);margin:16px 0 10px}
 .field{margin-bottom:12px}
 .field label{display:block;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#999;margin-bottom:5px}
-.field input,.field select,.field textarea{width:100%;background:var(--cream);border:1.5px solid var(--timber-light);border-radius:10px;padding:10px 13px;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-size:14px;color:var(--ink);outline:none;-webkit-appearance:none}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--timber)}
+.field input,.field select,.field textarea{width:100%;background:var(--off-white);border:1.5px solid var(--rule);border-radius:10px;padding:10px 13px;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-size:14px;color:var(--ink);outline:none;-webkit-appearance:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--forge)}
 .field textarea{resize:vertical;min-height:72px}
 .field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.modal-save{width:100%;background:var(--ink);color:var(--parchment);border:none;border-radius:12px;padding:14px;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-size:15px;font-weight:500;cursor:pointer;margin-top:10px}
+.modal-save{width:100%;background:var(--ink);color:var(--off-white);border:none;border-radius:12px;padding:14px;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-size:15px;font-weight:500;cursor:pointer;margin-top:10px}
 .modal-cancel{width:100%;background:none;border:none;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-size:14px;color:#aaa;cursor:pointer;padding:10px;margin-top:4px}
-.photo-upload{border:2px dashed var(--timber-light);border-radius:10px;padding:16px;text-align:center;cursor:pointer;background:var(--cream)}
+.photo-upload{border:2px dashed var(--rule);border-radius:10px;padding:16px;text-align:center;cursor:pointer;background:var(--off-white)}
 .photo-preview{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
-.photo-thumb{width:68px;height:68px;border-radius:8px;object-fit:cover;border:1px solid var(--timber-light)}
+.photo-thumb{width:68px;height:68px;border-radius:8px;object-fit:cover;border:1px solid var(--rule)}
 .ai-row{display:flex;gap:8px;align-items:flex-end}
 .ai-row .field{flex:1;margin-bottom:0}
-.ai-btn{background:var(--timber);color:white;border:none;border-radius:10px;padding:10px 14px;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-size:13px;font-weight:500;cursor:pointer;height:44px;white-space:nowrap}
-.ai-note{font-size:11px;color:var(--timber);margin-top:6px;display:none}
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--ink);display:flex;height:70px;z-index:200}
-.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer;border:none;background:transparent;padding:8px 0;position:relative}
-.nav-item.active{background:rgba(181,114,58,.15)}
-.nav-item.active::before{content:'';position:absolute;top:0;left:20%;right:20%;height:2px;background:var(--timber);border-radius:0 0 4px 4px}
-.nav-icon{font-size:18px}.nav-label{font-size:9px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--dust)}
-.nav-item.active .nav-label{color:var(--timber)}
+.ai-btn{background:var(--forge);color:white;border:none;border-radius:10px;padding:10px 14px;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-size:13px;font-weight:500;cursor:pointer;height:44px;white-space:nowrap}
+.ai-note{font-size:11px;color:var(--forge);margin-top:6px;display:none}
+
+
+
+
+
+.nav-item.active 
 .empty{text-align:center;padding:50px 20px}
 .empty-icon{font-size:44px;margin-bottom:12px}.empty-text{font-size:13px;color:#aaa;line-height:1.7}
-.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--parchment);font-size:13px;padding:10px 20px;border-radius:20px;opacity:0;transition:all .3s;z-index:500;white-space:nowrap;pointer-events:none}
+.toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:var(--off-white);font-size:13px;padding:10px 20px;border-radius:20px;opacity:0;transition:all .3s;z-index:500;white-space:nowrap;pointer-events:none}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
 .p-status-row{display:flex;gap:6px;margin-bottom:12px}
-.p-status-btn{flex:1;padding:8px 4px;border-radius:10px;border:1.5px solid var(--timber-light);background:white;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-size:11px;font-weight:500;cursor:pointer;text-align:center;transition:all .15s}
-.p-status-btn.sel{border-color:var(--timber);background:var(--parchment);color:var(--timber-dark)}
+.p-status-btn{flex:1;padding:8px 4px;border-radius:10px;border:1.5px solid var(--rule);background:white;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-size:11px;font-weight:500;cursor:pointer;text-align:center;transition:all .15s}
+.p-status-btn.sel{border-color:var(--forge);background:var(--off-white);color:var(--forge-deep)}
 @page{margin:0}
 @media print{
   body>*{display:none!important}
   #spec-print-doc{display:block!important}
 }
-#spec-print-doc{display:none;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;padding:14mm 16mm;color:#1a1612}
-#spec-print-doc h1{font-family:Georgia,serif;font-size:22px;margin-bottom:4px;font-weight:400}
+#spec-print-doc{display:none;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;padding:14mm 16mm;color:#1A1410}
+#spec-print-doc h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;margin-bottom:4px;font-weight:400}
 #spec-print-doc .spec-client{font-size:12px;color:#888;margin-bottom:14px}
 #spec-print-doc .spec-desc{font-size:13px;line-height:1.7;margin-bottom:14px;color:#333}
 #spec-print-doc .spec-photo{margin-bottom:14px}
@@ -138,7 +152,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
 #spec-print-doc .spec-photo.lg img{max-width:100%}
 #spec-print-doc .spec-table{width:100%;border-collapse:collapse;margin-bottom:14px;font-size:12px}
 #spec-print-doc .spec-table td{padding:5px 8px;border:1px solid #ddd}
-#spec-print-doc .spec-table td:first-child{font-weight:600;background:#faf7f2;width:35%}
+#spec-print-doc .spec-table td:first-child{font-weight:600;background:#FAF9F7;width:35%}
 #spec-print-doc .spec-price{font-size:16px;font-weight:700;margin-bottom:14px}
 #spec-print-doc .spec-notes{border:1px solid #ddd;border-radius:4px;padding:10px;min-height:80px;font-size:12px;color:#aaa}
 #spec-print-doc .spec-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px;border-bottom:1px solid #ddd;padding-bottom:10px}
@@ -147,26 +161,28 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
 /* SPEC SHEET PRINT */
 .spec-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;padding-bottom:16px;border-bottom:1px solid #ddd}
 .spec-title{font-family:Georgia,'Times New Roman',serif;font-size:28px;margin-bottom:16px;line-height:1.2}
-.spec-section-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#b5723a;margin:20px 0 8px;border-bottom:1px solid #f0ede8;padding-bottom:4px}
+.spec-section-label{font-size:11px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#C4530A;margin:20px 0 8px;border-bottom:1px solid #f0ede8;padding-bottom:4px}
 .spec-dims-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px}
 .spec-dim-item{font-size:13px;line-height:1.5}
 .spec-dim-label{color:#999;font-size:10px;text-transform:uppercase;letter-spacing:.06em}
 .spec-notes-line{border-bottom:1px solid #ddd;height:30px;margin-bottom:2px}
 /* PROJECT ROW in expanded client card */
-.proj-row{padding:12px 15px;border-bottom:1px solid var(--parchment)}
+.proj-row{padding:12px 15px;border-bottom:1px solid var(--off-white)}
 .proj-row:last-of-type{border-bottom:none}
-.client-card-expanded{border-top:1px solid var(--parchment)}
+.client-card-expanded{border-top:1px solid var(--off-white)}
 </style>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" onerror="this.remove()">
 </head>
 <body>
 
 <div class="header">
-  <div><div class="header-title">Material Library</div><div class="header-sub" id="header-sub">The Wattle Road · FCD</div></div>
-  <div style="display:flex;gap:8px;align-items:center">
-    <button id="header-add-btn" onclick="handleAdd()" style="background:var(--timber);color:white;border:none;width:34px;height:34px;border-radius:50%;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center">+</button>
+  <div class="header-mark">
+    <span class="header-the">The</span>
+    <span class="header-name">Wattle Road</span>
   </div>
+  <span class="header-sub">Material Library</span>
+  <div style="display:flex;gap:8px;align-items:center"><button id="header-add-btn" onclick="handleAdd()" style="background:var(--forge);color:white;border:none;width:34px;height:34px;border-radius:50%;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1">+</button></div>
 </div>
-
 <!-- STOCK -->
 <div class="view active" id="view-stock">
   <div class="stats-row s4">
@@ -202,16 +218,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
 <!-- PIPELINE -->
 <div class="view" id="view-pipeline">
   <div style="padding:10px 16px 0;display:flex;align-items:center;justify-content:space-between">
-    <div style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--timber)">Client Pipeline</div>
+    <div style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--forge)">Client Pipeline</div>
     <div style="display:flex;gap:6px;align-items:center">
-      <select id="pipe-sort" onchange="RP()" style="font-size:11px;background:var(--parchment);border:1px solid var(--timber-light);border-radius:8px;padding:4px 8px;color:var(--ink);font-family:system-ui,sans-serif;cursor:pointer">
+      <select id="pipe-sort" onchange="RP()" style="font-size:11px;background:var(--off-white);border:1px solid var(--rule);border-radius:8px;padding:4px 8px;color:var(--ink);font-family:system-ui,sans-serif;cursor:pointer">
         <option value="date-desc">Newest</option>
         <option value="date-asc">Oldest</option>
         <option value="alpha">A-Z</option>
         <option value="value-desc">Value ↓</option>
         <option value="value-asc">Value ↑</option>
       </select>
-      <button onclick="syncGoogleSheet(false)" id="sync-btn" style="background:var(--sage-light);color:var(--sage);border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:500;cursor:pointer;font-family:system-ui,sans-serif">↻ Sync</button>
+      <button onclick="syncGoogleSheet(false)" id="sync-btn" style="background:var(--forge-pale);color:var(--sand);border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:500;cursor:pointer;font-family:system-ui,sans-serif">↻ Sync</button>
       <button onclick="syncGoogleSheet(true)" title="Debug columns" style="background:var(--amber-light);color:var(--amber);border:none;border-radius:8px;padding:5px 8px;font-size:12px;cursor:pointer;font-family:system-ui,sans-serif">🔍</button>
     </div>
   </div>
@@ -236,8 +252,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
 <!-- DASHBOARD -->
 <div class="view" id="view-dashboard">
   <div style="padding:14px 16px 0;display:flex;align-items:center;justify-content:space-between">
-    <div style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--timber)">Business Dashboard</div>
-    <button onclick="openGoalsModal()" style="background:var(--timber);color:white;border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:500;cursor:pointer;font-family:system-ui,sans-serif">⚙ Goals</button>
+    <div style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--forge)">Business Dashboard</div>
+    <button onclick="openGoalsModal()" style="background:var(--forge);color:white;border:none;border-radius:8px;padding:5px 12px;font-size:12px;font-weight:500;cursor:pointer;font-family:system-ui,sans-serif">⚙ Goals</button>
   </div>
   <div class="filter-row" style="padding-top:10px">
     <button class="chip active" onclick="setDashPeriod('week',this)">This Week</button>
@@ -258,8 +274,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
   <!-- BUGS TAB -->
   <div id="admin-bugs">
     <div style="padding:10px 16px 6px;display:flex;align-items:center;justify-content:space-between">
-      <div style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--timber)">Bug List</div>
-      <button onclick="copyBugsForClaude()" style="background:var(--ink);color:var(--parchment);border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:system-ui,sans-serif">Copy for Claude</button>
+      <div style="font-size:10px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--forge)">Bug List</div>
+      <button onclick="copyBugsForClaude()" style="background:var(--ink);color:var(--off-white);border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:system-ui,sans-serif">Copy for Claude</button>
     </div>
     <div class="cards" id="bug-list"></div>
   </div>
@@ -314,11 +330,26 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
 
 <!-- BOTTOM NAV -->
 <div class="bottom-nav">
-  <button class="nav-item" onclick="switchView('dashboard',this)"><span class="nav-icon">🎯</span><span class="nav-label">Dashboard</span></button>
-  <button class="nav-item active" onclick="switchView('stock',this)"><span class="nav-icon">🪵</span><span class="nav-label">Stock</span></button>
-  <button class="nav-item" onclick="switchView('contacts',this)"><span class="nav-icon">🤝</span><span class="nav-label">Contacts</span></button>
-  <button class="nav-item" onclick="switchView('pipeline',this)"><span class="nav-icon">📊</span><span class="nav-label">Pipeline</span></button>
-  <button class="nav-item" onclick="switchView('admin',this)"><span class="nav-icon">⚙️</span><span class="nav-label">Admin</span></button>
+  <button class="nav-item" onclick="switchView('dashboard',this)" id="nav-dashboard">
+    <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg></span>
+    <span class="nav-label">Overview</span>
+  </button>
+  <button class="nav-item active" onclick="switchView('stock',this)" id="nav-stock">
+    <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="14" height="10" rx="1.5"/><path d="M5 4V3a3 3 0 0 1 6 0v1"/><line x1="8" y1="8" x2="8" y2="11"/><line x1="6" y1="9.5" x2="10" y2="9.5"/></svg></span>
+    <span class="nav-label">Stock</span>
+  </button>
+  <button class="nav-item" onclick="switchView('contacts',this)" id="nav-contacts">
+    <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="5" r="3"/><path d="M1 14c0-3 2-5 5-5s5 2 5 5"/><circle cx="13" cy="6" r="2"/><path d="M13 10c1.5 0 2.5 1 2.5 3"/></svg></span>
+    <span class="nav-label">Contacts</span>
+  </button>
+  <button class="nav-item" onclick="switchView('pipeline',this)" id="nav-pipeline">
+    <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="1" y1="14" x2="15" y2="14"/><rect x="2" y="8" width="3" height="6" rx="0.5"/><rect x="6.5" y="5" width="3" height="9" rx="0.5"/><rect x="11" y="2" width="3" height="12" rx="0.5"/></svg></span>
+    <span class="nav-label">Pipeline</span>
+  </button>
+  <button class="nav-item" onclick="switchView('admin',this)" id="nav-admin">
+    <span class="nav-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="8" r="2.5"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41"/></svg></span>
+    <span class="nav-label">Admin</span>
+  </button>
 </div>
 
 <!-- STOCK MODAL -->
@@ -478,9 +509,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
   <div class="modal-section">Value & Status</div>
   <div class="field"><label>Estimated Value (AUD)</label>
     <div style="display:flex;align-items:center;gap:10px">
-      <input id="prj-val" type="number" placeholder="0" min="0" style="flex:1;background:var(--cream);border:1.5px solid var(--timber-light);border-radius:10px;padding:10px 13px;font-family:-apple-system,sans-serif;font-size:14px;color:var(--ink);outline:none" oninput="if(parseFloat(this.value)>0){var f=document.getElementById('prj-free');if(f){f.checked=false;document.getElementById('prj-val').disabled=false;document.getElementById('prj-val').style.opacity='1';}}">
-      <div onclick="document.getElementById('prj-free').click()" style="display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;flex-shrink:0;padding:10px 12px;background:var(--cream);border:1.5px solid var(--timber-light);border-radius:10px">
-        <input type="checkbox" id="prj-free" onchange="var v=document.getElementById('prj-val');v.disabled=this.checked;v.style.opacity=this.checked?'0.4':'1';if(this.checked)v.value='';" style="width:16px;height:16px;cursor:pointer;accent-color:var(--sage)" onclick="event.stopPropagation()">
+      <input id="prj-val" type="number" placeholder="0" min="0" style="flex:1;background:var(--off-white);border:1.5px solid var(--rule);border-radius:10px;padding:10px 13px;font-family:-apple-system,sans-serif;font-size:14px;color:var(--ink);outline:none" oninput="if(parseFloat(this.value)>0){var f=document.getElementById('prj-free');if(f){f.checked=false;document.getElementById('prj-val').disabled=false;document.getElementById('prj-val').style.opacity='1';}}">
+      <div onclick="document.getElementById('prj-free').click()" style="display:flex;align-items:center;gap:6px;cursor:pointer;white-space:nowrap;flex-shrink:0;padding:10px 12px;background:var(--off-white);border:1.5px solid var(--rule);border-radius:10px">
+        <input type="checkbox" id="prj-free" onchange="var v=document.getElementById('prj-val');v.disabled=this.checked;v.style.opacity=this.checked?'0.4':'1';if(this.checked)v.value='';" style="width:16px;height:16px;cursor:pointer;accent-color:var(--sand)" onclick="event.stopPropagation()">
         <span style="font-size:13px;color:#888;font-family:-apple-system,sans-serif">Free</span>
       </div>
     </div>
@@ -511,7 +542,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
   <div class="modal-section">Photos</div>
   <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
     <div style="font-size:11px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:#999;flex-shrink:0">Print size</div>
-    <select id="prj-photo-size" style="font-size:12px;background:var(--cream);border:1.5px solid var(--timber-light);border-radius:8px;padding:6px 10px;color:var(--ink);font-family:-apple-system,sans-serif;flex:1">
+    <select id="prj-photo-size" style="font-size:12px;background:var(--off-white);border:1.5px solid var(--rule);border-radius:8px;padding:6px 10px;color:var(--ink);font-family:-apple-system,sans-serif;flex:1">
       <option value="small">Small (40%)</option>
       <option value="medium" selected>Medium (65%)</option>
       <option value="large">Large (100%)</option>
@@ -540,9 +571,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
     <div style="font-size:12px;color:var(--amber)">🔒 Sensitive fields locked</div>
     <button onclick="showPINPrompt()" style="background:var(--amber);color:white;border:none;border-radius:8px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif">Unlock</button>
   </div>
-  <div id="pin-unlocked-bar" style="margin:8px 16px;background:var(--sage-light);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;display:none">
-    <div style="font-size:12px;color:var(--sage)">🔓 Sensitive fields unlocked</div>
-    <button onclick="lockPIN()" style="background:var(--sage);color:white;border:none;border-radius:8px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif">Lock</button>
+  <div id="pin-unlocked-bar" style="margin:8px 16px;background:var(--forge-pale);border-radius:10px;padding:10px 14px;display:flex;align-items:center;justify-content:space-between;gap:10px;display:none">
+    <div style="font-size:12px;color:var(--sand)">🔓 Sensitive fields unlocked</div>
+    <button onclick="lockPIN()" style="background:var(--sand);color:white;border:none;border-radius:8px;padding:5px 12px;font-size:12px;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif">Lock</button>
   </div>
 
   <div class="filter-row">
@@ -589,7 +620,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
     <div class="field"><label>GPS Latitude</label><input id="loc-lat" type="number" step="any" placeholder="-31.4281"></div>
     <div class="field"><label>GPS Longitude</label><input id="loc-lng" type="number" step="any" placeholder="152.9087"></div>
   </div>
-  <button onclick="getCurrentLocation()" style="width:100%;background:var(--parchment);border:1.5px solid var(--timber-light);border-radius:10px;padding:10px;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-size:13px;color:var(--timber);cursor:pointer;margin-bottom:12px">📍 Use My Current Location</button>
+  <button onclick="getCurrentLocation()" style="width:100%;background:var(--off-white);border:1.5px solid var(--rule);border-radius:10px;padding:10px;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-size:13px;color:var(--forge);cursor:pointer;margin-bottom:12px">📍 Use My Current Location</button>
   <div class="field"><label>General Notes</label><textarea id="loc-notes" placeholder="What's stored here, capacity, condition of space..."></textarea></div>
   <div class="field"><label>Contact Person</label><input id="loc-contact" type="text" placeholder="Name and relationship if external"></div>
   <div class="field"><label>Contact Phone</label><input id="loc-phone" type="tel" placeholder="04xx xxx xxx"></div>
@@ -645,22 +676,22 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
   <div class="modal-handle"></div>
   <div class="modal-title">Set Business Goals</div>
   <div style="font-size:12px;color:#888;margin-bottom:16px;line-height:1.5">Goals track against closed deals. Set targets and the dashboard shows actual vs goal, pace, and projection.</div>
-  <div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--timber);margin-bottom:10px">Weekly</div>
+  <div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--forge);margin-bottom:10px">Weekly</div>
   <div class="field-row">
     <div class="field"><label>Revenue ($)</label><input id="g-week-rev" type="number" placeholder="0" min="0"></div>
     <div class="field"><label>Wins</label><input id="g-week-wins" type="number" placeholder="0" min="0"></div>
   </div>
-  <div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--timber);margin:14px 0 10px">Monthly</div>
+  <div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--forge);margin:14px 0 10px">Monthly</div>
   <div class="field-row">
     <div class="field"><label>Revenue ($)</label><input id="g-month-rev" type="number" placeholder="0" min="0"></div>
     <div class="field"><label>Wins</label><input id="g-month-wins" type="number" placeholder="0" min="0"></div>
   </div>
-  <div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--timber);margin:14px 0 10px">Quarterly</div>
+  <div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--forge);margin:14px 0 10px">Quarterly</div>
   <div class="field-row">
     <div class="field"><label>Revenue ($)</label><input id="g-quarter-rev" type="number" placeholder="0" min="0"></div>
     <div class="field"><label>Wins</label><input id="g-quarter-wins" type="number" placeholder="0" min="0"></div>
   </div>
-  <div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--timber);margin:14px 0 10px">Annual</div>
+  <div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--forge);margin:14px 0 10px">Annual</div>
   <div class="field-row">
     <div class="field"><label>Revenue ($)</label><input id="g-year-rev" type="number" placeholder="0" min="0"></div>
     <div class="field"><label>Wins</label><input id="g-year-wins" type="number" placeholder="0" min="0"></div>
@@ -856,7 +887,7 @@ function showSD(id){
   document.getElementById('d-back').onclick=()=>{SV2('stock');RS()};
   document.getElementById('d-edit').onclick=()=>editS(id);
   document.getElementById('d-inner').innerHTML=`
-    ${d.photos&&d.photos[0]?`<img style="width:100%;height:200px;object-fit:cover;display:block" src="${d.photos[0]}">`:`<div style="width:100%;height:160px;background:linear-gradient(135deg,var(--parchment),var(--timber-light));display:flex;align-items:center;justify-content:center;font-size:56px">${d.type==='project'?'📖':'🪵'}</div>`}
+    ${d.photos&&d.photos[0]?`<img style="width:100%;height:200px;object-fit:cover;display:block" src="${d.photos[0]}">`:`<div style="width:100%;height:160px;background:linear-gradient(135deg,var(--off-white),var(--rule));display:flex;align-items:center;justify-content:center;font-size:56px">${d.type==='project'?'📖':'🪵'}</div>`}
     <div class="detail-body">
       <div class="detail-section"><div class="detail-section-title">Origin</div>
         <div class="detail-grid">
@@ -881,7 +912,7 @@ function showSD(id){
       ${d.notes?`<div class="detail-section"><div class="detail-section-title">Notes</div><div class="detail-notes">${d.notes}</div></div>`:''}
       <div class="detail-section"><div class="detail-section-title">FCD Provenance Chain</div>
         <div id="prov-chain-${id}">${renderProvChain(d)}</div>
-        <button onclick="addProvStep('${id}')" style="width:100%;margin-top:8px;background:var(--parchment);border:1.5px dashed var(--timber-light);border-radius:10px;padding:10px;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-size:13px;color:var(--timber);cursor:pointer">+ Add Step</button>
+        <button onclick="addProvStep('${id}')" style="width:100%;margin-top:8px;background:var(--off-white);border:1.5px dashed var(--rule);border-radius:10px;padding:10px;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-size:13px;color:var(--forge);cursor:pointer">+ Add Step</button>
       </div>
       <div class="detail-actions"><button class="btn-full secondary" onclick="editS('${id}')">✏️ Edit</button></div>
       <div id="stock-stepper-${id}">${buildStockStepper(id, d.status)}</div>
@@ -1067,12 +1098,12 @@ function showSupD(id){
         <div class="detail-field"><div class="detail-field-label">Contact</div><div class="detail-field-value">${d.contact||'—'}</div></div>
         <div class="detail-field"><div class="detail-field-label">Location</div><div class="detail-field-value" style="font-size:12px">${d.loc||'—'}</div></div>
       </div>
-      ${d.phone||d.email?`<div class="detail-grid" style="margin-top:8px">${d.phone?`<div class="detail-field"><div class="detail-field-label">Phone</div><div class="detail-field-value"><a href="tel:${d.phone}" style="color:var(--timber)">${d.phone}</a></div></div>`:''} ${d.email?`<div class="detail-field"><div class="detail-field-label">Email</div><div class="detail-field-value"><a href="mailto:${d.email}" style="color:var(--timber);font-size:12px">${d.email}</a></div></div>`:''}</div>`:''}
+      ${d.phone||d.email?`<div class="detail-grid" style="margin-top:8px">${d.phone?`<div class="detail-field"><div class="detail-field-label">Phone</div><div class="detail-field-value"><a href="tel:${d.phone}" style="color:var(--forge)">${d.phone}</a></div></div>`:''} ${d.email?`<div class="detail-field"><div class="detail-field-label">Email</div><div class="detail-field-value"><a href="mailto:${d.email}" style="color:var(--forge);font-size:12px">${d.email}</a></div></div>`:''}</div>`:''}
     </div>
     <div class="detail-section">
       <div class="detail-section-title" style="display:flex;align-items:center;justify-content:space-between;font-size:12px">
         👥 Contacts
-        <button onclick="addContact('suppliers','${id}')" style="background:var(--timber);color:white;border:none;border-radius:8px;padding:5px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif">+ Add Contact</button>
+        <button onclick="addContact('suppliers','${id}')" style="background:var(--forge);color:white;border:none;border-radius:8px;padding:5px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif">+ Add Contact</button>
       </div>
       <div id="contacts-block-${id}">${renderContactsBlock(d.contacts,id,'suppliers')}</div>
     </div>
@@ -1098,15 +1129,15 @@ function showMkrD(id){
         <div class="detail-field"><div class="detail-field-label">Location</div><div class="detail-field-value">${d.loc||'—'}</div></div>
         <div class="detail-field"><div class="detail-field-label">FCD Status</div><div class="detail-field-value">${d.fcd==='certified'?'✓ Certified':d.fcd==='pending'?'Pending':'Not certified'}</div></div>
       </div>
-      ${d.email||d.phone?`<div class="detail-grid" style="margin-top:8px">${d.email?`<div class="detail-field"><div class="detail-field-label">Email</div><div class="detail-field-value"><a href="mailto:${d.email}" style="color:var(--timber);font-size:12px">${d.email}</a></div></div>`:''} ${d.phone?`<div class="detail-field"><div class="detail-field-label">Phone</div><div class="detail-field-value"><a href="tel:${d.phone}" style="color:var(--timber)">${d.phone}</a></div></div>`:''}</div>`:''}
+      ${d.email||d.phone?`<div class="detail-grid" style="margin-top:8px">${d.email?`<div class="detail-field"><div class="detail-field-label">Email</div><div class="detail-field-value"><a href="mailto:${d.email}" style="color:var(--forge);font-size:12px">${d.email}</a></div></div>`:''} ${d.phone?`<div class="detail-field"><div class="detail-field-label">Phone</div><div class="detail-field-value"><a href="tel:${d.phone}" style="color:var(--forge)">${d.phone}</a></div></div>`:''}</div>`:''}
     </div>
     ${d.about?`<div class="detail-section"><div class="detail-section-title">About</div><div class="detail-notes">${d.about}</div></div>`:''}
     ${d.materials?`<div class="detail-section"><div class="detail-section-title">Material Preferences</div><div class="detail-notes">${d.materials}</div></div>`:''}
-    ${d.engage?`<div class="detail-section"><div class="detail-section-title">How Dave Engages Them</div><div class="detail-notes" style="border-left:3px solid var(--timber);border-radius:0 10px 10px 0">${d.engage}</div></div>`:''}
+    ${d.engage?`<div class="detail-section"><div class="detail-section-title">How Dave Engages Them</div><div class="detail-notes" style="border-left:3px solid var(--forge);border-radius:0 10px 10px 0">${d.engage}</div></div>`:''}
     <div class="detail-section">
       <div class="detail-section-title" style="display:flex;align-items:center;justify-content:space-between;font-size:12px">
         👥 Contacts
-        <button onclick="addContact('makers','${id}')" style="background:var(--timber);color:white;border:none;border-radius:8px;padding:5px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif">+ Add Contact</button>
+        <button onclick="addContact('makers','${id}')" style="background:var(--forge);color:white;border:none;border-radius:8px;padding:5px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif">+ Add Contact</button>
       </div>
       <div id="contacts-block-${id}">${renderContactsBlock(d.contacts,id,'makers')}</div>
     </div>
@@ -1247,18 +1278,18 @@ function renderStockMatch(prospect) {
   if (!scored.length) return `<div style="font-size:13px;color:#aaa;padding:10px 0">No strong matches in current stock. May need to source.</div>`;
 
   const STATUS = {available:'Available',reserved:'Reserved','in-use':'In Use',complete:'Complete'};
-  const scoreBg = s => s >= 70 ? 'var(--sage-light)' : s >= 40 ? 'var(--amber-light)' : '#f0f0f0';
-  const scoreCol = s => s >= 70 ? 'var(--sage)' : s >= 40 ? 'var(--amber)' : '#aaa';
+  const scoreBg = s => s >= 70 ? 'var(--forge-pale)' : s >= 40 ? 'var(--amber-light)' : '#f0f0f0';
+  const scoreCol = s => s >= 70 ? 'var(--sand)' : s >= 40 ? 'var(--amber)' : '#aaa';
 
   return scored.map(s => `
-    <div onclick="showSD('${s.id}')" style="background:white;border:1px solid var(--timber-light);border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;display:flex;align-items:flex-start;gap:12px">
+    <div onclick="showSD('${s.id}')" style="background:white;border:1px solid var(--rule);border-radius:12px;padding:12px 14px;margin-bottom:8px;cursor:pointer;display:flex;align-items:flex-start;gap:12px">
       <div style="flex:1;min-width:0">
         <div style="font-family:Georgia,'Times New Roman',serif;font-size:14px;margin-bottom:3px">${s.species} · ${s.era}</div>
         <div style="font-size:11px;color:#888;margin-bottom:5px">📍 ${s.addr}</div>
         <div style="display:flex;gap:5px;flex-wrap:wrap">
-          <span style="font-size:11px;padding:2px 7px;border-radius:5px;background:var(--parchment);color:var(--timber-dark)">${s.type==='project'?'FCD Project':'Pool Stock'}</span>
-          <span style="font-size:11px;padding:2px 7px;border-radius:5px;background:var(--parchment);color:var(--timber-dark)">${STATUS[s.status]||s.status}</span>
-          <span style="font-size:11px;padding:2px 7px;border-radius:5px;background:var(--parchment);color:var(--timber-dark)">📦 ${s.vol}m³</span>
+          <span style="font-size:11px;padding:2px 7px;border-radius:5px;background:var(--off-white);color:var(--forge-deep)">${s.type==='project'?'FCD Project':'Pool Stock'}</span>
+          <span style="font-size:11px;padding:2px 7px;border-radius:5px;background:var(--off-white);color:var(--forge-deep)">${STATUS[s.status]||s.status}</span>
+          <span style="font-size:11px;padding:2px 7px;border-radius:5px;background:var(--off-white);color:var(--forge-deep)">📦 ${s.vol}m³</span>
         </div>
         ${s.dim?`<div style="font-size:11px;color:#aaa;margin-top:4px">📐 ${s.dim}</div>`:''}
       </div>
@@ -1315,21 +1346,21 @@ function buildStageStepper(id, stage, status) {
     ? ['Scheduled','Commenced','In Progress','Ready for Delivery','Complete']
     : ['Enquiry','Brief','Proposal','Scoping','Approved'];
   var cur = parseInt(stage) || 1;
-  var jColor = journey === 'client' ? 'var(--sage)' : 'var(--timber)';
+  var jColor = journey === 'client' ? 'var(--sand)' : 'var(--forge)';
   var jLabel = journey === 'client' ? 'Client Journey' : 'Prospect Journey';
 
   var dotsHtml = '<div style="display:flex;align-items:center;margin:0 2px">';
   for (var i = 1; i <= 5; i++) {
     var done = i < cur, active = i === cur;
     var bg = active ? 'var(--ink)' : done ? jColor : 'white';
-    var border = active ? '2.5px solid var(--ink)' : done ? ('2px solid ' + jColor) : '2px solid var(--timber-light)';
+    var border = active ? '2.5px solid var(--ink)' : done ? ('2px solid ' + jColor) : '2px solid var(--rule)';
     var col = (active||done) ? 'white' : '#ccc';
     var tcol = done ? jColor : active ? 'var(--ink)' : '#ccc';
     dotsHtml += '<div style="display:flex;flex-direction:column;align-items:center;flex:1">';
     dotsHtml += '<button onclick="setProspectStage(\'' + id + '\',\'' + i + '\')" style="width:32px;height:32px;border-radius:50%;border:' + border + ';background:' + bg + ';color:' + col + ';font-family:system-ui,sans-serif;font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center">' + (done ? '\u2713' : i) + '</button>';
     dotsHtml += '<div style="font-size:9px;color:' + tcol + ';margin-top:5px;text-align:center;font-weight:' + (active?'600':'400') + '">' + STAGES[i-1] + '</div>';
     dotsHtml += '</div>';
-    if (i < 5) dotsHtml += '<div style="height:2px;background:' + (done ? jColor : 'var(--timber-light)') + ';flex:0 0 10px;margin-bottom:18px"></div>';
+    if (i < 5) dotsHtml += '<div style="height:2px;background:' + (done ? jColor : 'var(--rule)') + ';flex:0 0 10px;margin-bottom:18px"></div>';
   }
   dotsHtml += '</div>';
 
@@ -1343,13 +1374,13 @@ function buildStageStepper(id, stage, status) {
     bottomHtml = '<div style="display:flex;gap:6px;margin-top:14px">';
     PSTATS.forEach(function(s) {
       var act = s.key === status;
-      bottomHtml += '<button onclick="setProspectStatus2(\'' + id + '\',\'' + s.key + '\')" style="flex:1;padding:9px 4px;border-radius:20px;border:1.5px solid ' + (act?'var(--ink)':'var(--timber-light)') + ';background:' + (act?'var(--ink)':'white') + ';font-family:system-ui,sans-serif;font-size:11px;font-weight:' + (act?'600':'400') + ';cursor:pointer;color:' + (act?'var(--parchment)':'#aaa') + ';display:flex;flex-direction:column;align-items:center;gap:3px"><span style="font-size:14px">' + s.icon + '</span><span>' + s.label + '</span></button>';
+      bottomHtml += '<button onclick="setProspectStatus2(\'' + id + '\',\'' + s.key + '\')" style="flex:1;padding:9px 4px;border-radius:20px;border:1.5px solid ' + (act?'var(--ink)':'var(--rule)') + ';background:' + (act?'var(--ink)':'white') + ';font-family:system-ui,sans-serif;font-size:11px;font-weight:' + (act?'600':'400') + ';cursor:pointer;color:' + (act?'var(--off-white)':'#aaa') + ';display:flex;flex-direction:column;align-items:center;gap:3px"><span style="font-size:14px">' + s.icon + '</span><span>' + s.label + '</span></button>';
     });
     bottomHtml += '</div>';
     if (cur === 5) {
-      bottomHtml += '<div style="margin-top:10px;background:var(--sage-light);border-radius:10px;padding:12px;text-align:center">';
-      bottomHtml += '<div style="font-size:12px;color:var(--sage);font-weight:500;margin-bottom:8px">Proposal approved - convert to active client</div>';
-      bottomHtml += '<button onclick="convertToClient(\'' + id + '\')" style="width:100%;background:var(--sage);color:white;border:none;border-radius:8px;padding:10px;font-family:system-ui,sans-serif;font-size:13px;font-weight:600;cursor:pointer">Convert to Client \u2192</button>';
+      bottomHtml += '<div style="margin-top:10px;background:var(--forge-pale);border-radius:10px;padding:12px;text-align:center">';
+      bottomHtml += '<div style="font-size:12px;color:var(--sand);font-weight:500;margin-bottom:8px">Proposal approved - convert to active client</div>';
+      bottomHtml += '<button onclick="convertToClient(\'' + id + '\')" style="width:100%;background:var(--sand);color:white;border:none;border-radius:8px;padding:10px;font-family:system-ui,sans-serif;font-size:13px;font-weight:600;cursor:pointer">Convert to Client \u2192</button>';
       bottomHtml += '</div>';
     }
   } else {
@@ -1357,14 +1388,14 @@ function buildStageStepper(id, stage, status) {
     bottomHtml = '<div style="display:flex;gap:8px;margin-top:14px">';
     if (cur < 5) {
       var nextStage = ['Scheduled','Commenced','In Progress','Ready for Delivery','Complete'];
-      bottomHtml += '<button onclick="setProspectStage(\'' + id + '\',\'' + (cur+1) + '\')" style="flex:1;padding:10px;border-radius:10px;border:none;background:var(--sage);color:white;font-family:system-ui,sans-serif;font-size:13px;font-weight:500;cursor:pointer">Advance \u2192 ' + nextStage[cur] + '</button>';
+      bottomHtml += '<button onclick="setProspectStage(\'' + id + '\',\'' + (cur+1) + '\')" style="flex:1;padding:10px;border-radius:10px;border:none;background:var(--sand);color:white;font-family:system-ui,sans-serif;font-size:13px;font-weight:500;cursor:pointer">Advance \u2192 ' + nextStage[cur] + '</button>';
     } else {
-      bottomHtml += '<button onclick="setProspectStatus2(\'' + id + '\',\'complete\')" style="flex:1;padding:10px;border-radius:10px;border:none;background:var(--sage);color:white;font-family:system-ui,sans-serif;font-size:13px;font-weight:600;cursor:pointer">Mark Complete \u2713</button>';
+      bottomHtml += '<button onclick="setProspectStatus2(\'' + id + '\',\'complete\')" style="flex:1;padding:10px;border-radius:10px;border:none;background:var(--sand);color:white;font-family:system-ui,sans-serif;font-size:13px;font-weight:600;cursor:pointer">Mark Complete \u2713</button>';
     }
     bottomHtml += '</div>';
   }
 
-  return '<div style="background:var(--parchment);border-radius:14px;padding:16px 14px;margin-top:10px">'
+  return '<div style="background:var(--off-white);border-radius:14px;padding:16px 14px;margin-top:10px">'
     + '<div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:' + jColor + ';margin-bottom:14px">' + jLabel + ' \u00b7 Stage ' + cur + ' of 5 \u00b7 ' + STAGES[cur-1] + '</div>'
     + dotsHtml + bottomHtml + '</div>';
 }
@@ -1377,7 +1408,7 @@ function promptInvoiceComplete(id) {
   inner.style.cssText = 'background:white;border-radius:20px 20px 0 0;width:100%;padding:24px 20px 40px';
 
   var title = document.createElement('div');
-  title.style.cssText = 'font-family:Georgia,serif;font-size:20px;margin-bottom:8px';
+  title.style.cssText = 'font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;margin-bottom:8px';
   title.textContent = 'Before marking complete';
   inner.appendChild(title);
 
@@ -1390,7 +1421,7 @@ function promptInvoiceComplete(id) {
   btns.style.cssText = 'display:flex;flex-direction:column;gap:10px';
 
   var b1 = document.createElement('button');
-  b1.style.cssText = 'background:var(--sage);color:white;border:none;border-radius:12px;padding:14px;font-family:system-ui,sans-serif;font-size:14px;font-weight:600;cursor:pointer';
+  b1.style.cssText = 'background:var(--sand);color:white;border:none;border-radius:12px;padding:14px;font-family:system-ui,sans-serif;font-size:14px;font-weight:600;cursor:pointer';
   b1.textContent = 'Yes - invoiced and paid ✓';
   b1.onclick = function() { overlay.remove(); setProspectStatus2(id,'complete'); };
 
@@ -1432,21 +1463,21 @@ function buildStockStepper(id, status) {
     {key:'complete',  label:'Complete',  icon:'★', desc:'Piece finished'},
   ];
   const cur = STATUSES.findIndex(s => s.key === status);
-  let html = '<div style="background:var(--parchment);border-radius:14px;padding:16px 14px;margin-top:10px">';
-  html += '<div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--timber);margin-bottom:14px">Material Status · ' + (cur+1) + ' of 4</div>';
+  let html = '<div style="background:var(--off-white);border-radius:14px;padding:16px 14px;margin-top:10px">';
+  html += '<div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--forge);margin-bottom:14px">Material Status · ' + (cur+1) + ' of 4</div>';
   html += '<div style="display:flex;align-items:center;margin:0 2px">';
   for (let i = 0; i < STATUSES.length; i++) {
     const s = STATUSES[i];
     const done = i < cur;
     const active = i === cur;
-    const dotBg = active ? 'var(--ink)' : done ? 'var(--timber)' : 'white';
-    const dotBorder = active ? '2.5px solid var(--ink)' : done ? '2px solid var(--timber)' : '2px solid var(--timber-light)';
+    const dotBg = active ? 'var(--ink)' : done ? 'var(--forge)' : 'white';
+    const dotBorder = active ? '2.5px solid var(--ink)' : done ? '2px solid var(--forge)' : '2px solid var(--rule)';
     html += '<div style="display:flex;flex-direction:column;align-items:center;flex:1">';
     html += '<button onclick="setStockStatus(\'' + id + '\',\'' + s.key + '\')" style="width:34px;height:34px;border-radius:50%;border:' + dotBorder + ';background:' + dotBg + ';color:' + (active||done?'white':'#ccc') + ';font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;position:relative;z-index:1">' + (done?'✓':s.icon) + '</button>';
-    html += '<div style="font-size:9px;color:' + (active?'var(--ink)':done?'var(--timber)':'#ccc') + ';margin-top:5px;text-align:center;font-weight:' + (active?'600':'400') + '">' + s.label + '</div>';
+    html += '<div style="font-size:9px;color:' + (active?'var(--ink)':done?'var(--forge)':'#ccc') + ';margin-top:5px;text-align:center;font-weight:' + (active?'600':'400') + '">' + s.label + '</div>';
     html += '</div>';
     if (i < STATUSES.length-1) {
-      html += '<div style="height:2px;background:' + (i < cur ? 'var(--timber)' : 'var(--timber-light)') + ';flex:0 0 10px;margin-bottom:18px"></div>';
+      html += '<div style="height:2px;background:' + (i < cur ? 'var(--forge)' : 'var(--rule)') + ';flex:0 0 10px;margin-bottom:18px"></div>';
     }
   }
   html += '</div>';
@@ -1471,7 +1502,7 @@ function viewSavedProposal(id) {
   var header = document.createElement('div');
   header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:12px';
   var htitle = document.createElement('div');
-  htitle.style.cssText = 'font-family:Georgia,serif;font-size:18px';
+  htitle.style.cssText = 'font-family:'Cormorant Garamond',Georgia,serif;font-size:18px';
   htitle.textContent = 'Saved Proposal';
   var closeX = document.createElement('button');
   closeX.style.cssText = 'background:none;border:none;font-size:22px;color:#aaa;cursor:pointer';
@@ -1489,12 +1520,12 @@ function viewSavedProposal(id) {
   btnRow.style.cssText = 'display:flex;gap:8px;margin-top:16px';
 
   var copyBtn = document.createElement('button');
-  copyBtn.style.cssText = 'flex:1;background:var(--timber);color:white;border:none;border-radius:10px;padding:12px;font-family:system-ui,sans-serif;font-size:13px;cursor:pointer';
+  copyBtn.style.cssText = 'flex:1;background:var(--forge);color:white;border:none;border-radius:10px;padding:12px;font-family:system-ui,sans-serif;font-size:13px;cursor:pointer';
   copyBtn.textContent = 'Copy';
   copyBtn.onclick = function(){ navigator.clipboard.writeText(d.savedProposal).then(function(){showToast('Copied');}); };
 
   var closeBtn = document.createElement('button');
-  closeBtn.style.cssText = 'flex:1;background:var(--parchment);border:1px solid var(--timber-light);border-radius:10px;padding:12px;font-family:system-ui,sans-serif;font-size:13px;cursor:pointer';
+  closeBtn.style.cssText = 'flex:1;background:var(--off-white);border:1px solid var(--rule);border-radius:10px;padding:12px;font-family:system-ui,sans-serif;font-size:13px;cursor:pointer';
   closeBtn.textContent = 'Close';
   closeBtn.onclick = function(){ overlay.remove(); };
 
@@ -1610,7 +1641,7 @@ function syncGoogleSheet(debugMode) {
       RP();
       btn.textContent = '✓ Synced';
       btn.style.opacity = '1';
-      btn.style.color = 'var(--sage)';
+      btn.style.color = 'var(--sand)';
       var totalVal = merged.reduce(function(s,c){return s+((c.projects||[]).filter(function(p){return p.status!=='closed-lost'&&!p.free;}).reduce(function(a,p){return a+(parseFloat(p.val)||0);},0));},0);
       showToast('Synced · ' + added + ' records · $' + Math.round(totalVal/1000) + 'k pipeline');
       setTimeout(function() { btn.textContent = '↻ Sync Sheet'; }, 3000);
@@ -1631,9 +1662,9 @@ function showDebugModal(text) {
   var inner = document.createElement('div');
   inner.style.cssText = 'background:white;border-radius:20px 20px 0 0;width:100%;max-height:80vh;display:flex;flex-direction:column';
   var topBar = document.createElement('div');
-  topBar.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:16px 18px 12px;border-bottom:1px solid #e8d5bd;flex-shrink:0';
+  topBar.style.cssText = 'display:flex;justify-content:space-between;align-items:center;padding:16px 18px 12px;border-bottom:1px solid #E5E0D8;flex-shrink:0';
   var title = document.createElement('div');
-  title.style.cssText = 'font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#b5723a';
+  title.style.cssText = 'font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#C4530A';
   title.textContent = 'Sync Debug';
   var closeBtn = document.createElement('button');
   closeBtn.style.cssText = 'background:none;border:none;font-size:22px;color:#aaa;cursor:pointer;line-height:1;padding:0 4px';
@@ -1650,7 +1681,7 @@ function showDebugModal(text) {
   var foot = document.createElement('div');
   foot.style.cssText = 'padding:12px 18px 40px;flex-shrink:0';
   var doneBtn = document.createElement('button');
-  doneBtn.style.cssText = 'width:100%;background:#1a1612;color:#f5f0e8;border:none;border-radius:10px;padding:13px;font-family:system-ui,sans-serif;font-size:14px;cursor:pointer';
+  doneBtn.style.cssText = 'width:100%;background:#1A1410;color:#FAF9F7;border:none;border-radius:10px;padding:13px;font-family:system-ui,sans-serif;font-size:14px;cursor:pointer';
   doneBtn.textContent = 'Close';
   doneBtn.onclick = function(){ ov.remove(); };
   foot.appendChild(doneBtn);
@@ -1966,9 +1997,9 @@ function RP(){
     var projRows=projects.map(function(p){
       var pct=Math.round((parseInt(p.stage)||1)/5*100);
       var journey=p.status==='closed-won'?'client':'prospect';
-      var stageBar='<div class="stage-bar" style="margin:4px 0 2px"><div class="stage-fill" style="width:'+pct+'%;height:3px;'+(journey==='client'?'background:var(--sage)':'')+'"></div></div>';
+      var stageBar='<div class="stage-bar" style="margin:4px 0 2px"><div class="stage-fill" style="width:'+pct+'%;height:3px;'+(journey==='client'?'background:var(--sand)':'')+'"></div></div>';
       var valTag=p.free?'<span class="tag green" style="font-size:10px">Free</span>':p.val&&parseFloat(p.val)>0?'<span class="tag green" style="font-size:10px">$'+Number(p.val).toLocaleString()+'</span>':'<button class="tag amber" style="border:none;cursor:pointer;font-size:10px" onclick="event.stopPropagation();openEditProject(\''+c.id+'\',\''+p.id+'\')">+ value</button>';
-      return'<div onclick="event.stopPropagation();showProjectD(\''+c.id+'\',\''+p.id+'\')" style="background:var(--parchment);border-radius:10px;padding:10px 12px;margin-top:6px;cursor:pointer">'
+      return'<div onclick="event.stopPropagation();showProjectD(\''+c.id+'\',\''+p.id+'\')" style="background:var(--off-white);border-radius:10px;padding:10px 12px;margin-top:6px;cursor:pointer">'
         +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">'
         +'<div style="font-size:13px;font-weight:500;flex:1">'+p.title+'</div>'
         +'<div style="display:flex;gap:4px;flex-shrink:0">'+valTag
@@ -2006,7 +2037,7 @@ function RP(){
       html+=prospectClients.map(clientCard).join('');
     }
     if(wipClients.length){
-      html+='<div class="stock-divider" style="background:var(--sage-light);color:var(--sage);margin-top:'+(prospectClients.length?8:0)+'px">🔨 Active Clients <span style="margin-left:auto;font-size:10px;color:var(--sage);opacity:.7">'+wipClients.length+'</span></div>';
+      html+='<div class="stock-divider" style="background:var(--forge-pale);color:var(--sand);margin-top:'+(prospectClients.length?8:0)+'px">🔨 Active Clients <span style="margin-left:auto;font-size:10px;color:var(--sand);opacity:.7">'+wipClients.length+'</span></div>';
       html+=wipClients.map(clientCard).join('');
     }
     list.innerHTML=html;
@@ -2025,23 +2056,23 @@ function showClientD(clientId){
   var projHtml=projects.map(function(p){
     var pct=Math.round((parseInt(p.stage)||1)/5*100);
     var journey=p.status==='closed-won'?'client':'prospect';
-    return'<div style="background:white;border:1px solid var(--timber-light);border-radius:12px;padding:14px;margin-bottom:10px">'
+    return'<div style="background:white;border:1px solid var(--rule);border-radius:12px;padding:14px;margin-bottom:10px">'
       +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px">'
-      +'<div style="font-family:Georgia,serif;font-size:15px;flex:1">'+p.title+'</div>'
+      +'<div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;flex:1">'+p.title+'</div>'
       +'<span class="badge '+(p.status==='closed-won'?'closed-won':p.status==='active-client'?'active-client':p.status==='complete'?'complete':p.status==='closed-lost'?'grey':'prospect')+'">'+SL2[p.status]+'</span>'
       +'</div>'
       +(p.description?'<div style="font-size:12px;color:#888;margin-bottom:8px;line-height:1.6">'+p.description.substring(0,120)+(p.description.length>120?'...':'')+'</div>':'')
-      +'<div class="stage-bar"><div class="stage-fill" style="width:'+pct+'%;'+(journey==='client'?'background:var(--sage)':'')+'"></div></div>'
+      +'<div class="stage-bar"><div class="stage-fill" style="width:'+pct+'%;'+(journey==='client'?'background:var(--sand)':'')+'"></div></div>'
       +'<div style="font-size:11px;color:#aaa;margin-top:3px;margin-bottom:10px">'+(journey==='client'?'Client':'Prospect')+' · '+getStageLabel(p)+'</div>'
       +'<div style="display:flex;gap:8px;flex-wrap:wrap">'
       +(p.free?'<span class="tag green">Free job</span>':p.val?'<span class="tag green">$'+Number(p.val).toLocaleString()+'</span>':'')
       +(p.material?'<span class="tag">🪵 '+p.material+'</span>':'')
-      +(p.jobSheetUrl?'<a href="'+p.jobSheetUrl+'" target="_blank" class="tag" style="color:var(--timber);text-decoration:none">📄 Proposal</a>':'')
+      +(p.jobSheetUrl?'<a href="'+p.jobSheetUrl+'" target="_blank" class="tag" style="color:var(--forge);text-decoration:none">📄 Proposal</a>':'')
       +'</div>'
       +'<div style="display:flex;gap:8px;margin-top:10px">'
       +'<button class="btn-full secondary" style="font-size:12px;padding:8px" onclick="showProjectD(\''+clientId+'\',\''+p.id+'\')">View Detail</button>'
       +'<button class="btn-full secondary" style="font-size:12px;padding:8px" onclick="openEditProject(\''+clientId+'\',\''+p.id+'\')">✏️ Edit</button>'
-      +'<button class="btn-full primary" style="font-size:12px;padding:8px;background:var(--sage)" onclick="advProject(\''+clientId+'\',\''+p.id+'\')">→</button>'
+      +'<button class="btn-full primary" style="font-size:12px;padding:8px;background:var(--sand)" onclick="advProject(\''+clientId+'\',\''+p.id+'\')">→</button>'
       +'<button class="btn-sm" style="padding:8px;flex-shrink:0" onclick="printSpecSheet(\''+clientId+'\',\''+p.id+'\')">🖨</button>'
       +'</div>'
       +'<div id="stepper-'+p.id+'" style="margin-top:6px">'+buildProjectStepper(clientId,p)+'</div>'
@@ -2050,15 +2081,15 @@ function showClientD(clientId){
   document.getElementById('d-inner').innerHTML='<div class="detail-body">'
     +'<div class="detail-section"><div class="detail-section-title">Client</div>'
     +'<div class="detail-grid">'
-    +(c.email?'<div class="detail-field"><div class="detail-field-label">Email</div><div class="detail-field-value"><a href="mailto:'+c.email+'" style="color:var(--timber);font-size:12px">'+c.email+'</a></div></div>':'')
-    +(c.phone?'<div class="detail-field"><div class="detail-field-label">Phone</div><div class="detail-field-value"><a href="tel:'+c.phone+'" style="color:var(--timber)">'+c.phone+'</a></div></div>':'')
+    +(c.email?'<div class="detail-field"><div class="detail-field-label">Email</div><div class="detail-field-value"><a href="mailto:'+c.email+'" style="color:var(--forge);font-size:12px">'+c.email+'</a></div></div>':'')
+    +(c.phone?'<div class="detail-field"><div class="detail-field-label">Phone</div><div class="detail-field-value"><a href="tel:'+c.phone+'" style="color:var(--forge)">'+c.phone+'</a></div></div>':'')
     +(c.address?'<div class="detail-field" style="grid-column:span 2"><div class="detail-field-label">Address</div><div class="detail-field-value">'+c.address+'</div></div>':'')
     +'</div>'
     +(c.notes?'<div class="detail-notes" style="margin-top:8px">'+c.notes+'</div>':'')
     +'</div>'
     +'<div class="detail-section">'
     +'<div class="detail-section-title" style="display:flex;align-items:center;justify-content:space-between">'
-    +'Jobs <button style="background:var(--timber);color:white;border:none;border-radius:8px;padding:5px 14px;font-size:12px;cursor:pointer;font-family:-apple-system,sans-serif" onclick="openAddProject(\''+clientId+'\')">+ Add Job</button>'
+    +'Jobs <button style="background:var(--forge);color:white;border:none;border-radius:8px;padding:5px 14px;font-size:12px;cursor:pointer;font-family:-apple-system,sans-serif" onclick="openAddProject(\''+clientId+'\')">+ Add Job</button>'
     +'</div>'
     +(projHtml||'<div style="font-size:13px;color:#aaa;padding:10px 0">No jobs yet — tap + Add Job</div>')
     +'</div>'
@@ -2089,16 +2120,16 @@ function showProjectD(clientId,projectId){
     +(dimParts.length?'<div class="detail-section"><div class="detail-section-title">Dimensions</div><div class="detail-notes">'+dimParts.join(' · ')+'</div></div>':'')
     +(p.material||p.finish||p.specs?'<div class="detail-section"><div class="detail-section-title">Specifications</div><div class="detail-grid">'+(p.material?'<div class="detail-field"><div class="detail-field-label">Material</div><div class="detail-field-value">'+p.material+'</div></div>':'')+(p.finish?'<div class="detail-field"><div class="detail-field-label">Finish</div><div class="detail-field-value">'+p.finish+'</div></div>':'')+'</div>'+(p.specs?'<div class="detail-notes" style="margin-top:8px">'+p.specs+'</div>':'')+'</div>':'')
     +'<div class="detail-section"><div class="detail-section-title">Stage</div>'
-    +'<div class="stage-bar"><div class="stage-fill" style="width:'+pct+'%;'+(journey==='client'?'background:var(--sage)':'')+'"></div></div>'
+    +'<div class="stage-bar"><div class="stage-fill" style="width:'+pct+'%;'+(journey==='client'?'background:var(--sand)':'')+'"></div></div>'
     +'<div style="font-size:12px;color:#aaa;margin-top:3px">'+(journey==='client'?'Client':'Prospect')+' · '+getStageLabel(p)+'</div>'
     +'<div class="detail-grid" style="margin-top:10px">'
     +'<div class="detail-field"><div class="detail-field-label">Value</div><div class="detail-field-value">'+(p.free?'Free job':p.val?'$'+Number(p.val).toLocaleString():'—')+'</div></div>'
     +(p.scheduledStart?'<div class="detail-field"><div class="detail-field-label">Start</div><div class="detail-field-value">'+FD(p.scheduledStart)+'</div></div>':'')
     +(p.scheduledEnd?'<div class="detail-field"><div class="detail-field-label">End</div><div class="detail-field-value">'+FD(p.scheduledEnd)+'</div></div>':'')
     +'</div></div>'
-    +(p.next?'<div class="detail-section"><div class="detail-section-title">Next Action</div><div class="detail-notes" style="border-left:3px solid var(--timber);border-radius:0 10px 10px 0">→ '+p.next+'</div></div>':'')
+    +(p.next?'<div class="detail-section"><div class="detail-section-title">Next Action</div><div class="detail-notes" style="border-left:3px solid var(--forge);border-radius:0 10px 10px 0">→ '+p.next+'</div></div>':'')
     +(p.workshopNotes?'<div class="detail-section"><div class="detail-section-title">Workshop Notes</div><div class="detail-notes">'+p.workshopNotes+'</div></div>':'')
-    +(p.jobSheetUrl?'<div class="detail-section"><div class="detail-section-title">Documents</div><a href="'+p.jobSheetUrl+'" target="_blank" style="display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--timber-light);border-radius:10px;padding:12px 14px;text-decoration:none"><span style="font-size:20px">📄</span><div><div style="font-size:13px;font-weight:500;color:var(--ink)">Job Sheet / Proposal</div><div style="font-size:11px;color:var(--timber);margin-top:2px">Open ↗</div></div></a></div>':'')
+    +(p.jobSheetUrl?'<div class="detail-section"><div class="detail-section-title">Documents</div><a href="'+p.jobSheetUrl+'" target="_blank" style="display:flex;align-items:center;gap:12px;background:white;border:1px solid var(--rule);border-radius:10px;padding:12px 14px;text-decoration:none"><span style="font-size:20px">📄</span><div><div style="font-size:13px;font-weight:500;color:var(--ink)">Job Sheet / Proposal</div><div style="font-size:11px;color:var(--forge);margin-top:2px">Open ↗</div></div></a></div>':'')
     +'<div class="detail-actions" style="margin-top:16px">'
     +'<button class="btn-full secondary" onclick="openEditProject(\''+clientId+'\',\''+projectId+'\')">✏️ Edit</button>'
     +'<button class="btn-full secondary" onclick="printSpecSheet(\''+clientId+'\',\''+projectId+'\')">🖨 Print Sheet</button>'
@@ -2114,21 +2145,21 @@ function buildProjectStepper(clientId,proj){
   var journey=proj.status==='closed-won'?'client':'prospect';
   var STGS=journey==='client'?['Scheduled','Commenced','In Progress','Ready for Delivery','Complete']:['Enquiry','Brief','Proposal','Scoping','Approved'];
   var cur=parseInt(proj.stage)||1;
-  var jColor=journey==='client'?'var(--sage)':'var(--timber)';
-  var html='<div style="background:var(--parchment);border-radius:14px;padding:14px 12px;margin-top:6px">';
+  var jColor=journey==='client'?'var(--sand)':'var(--forge)';
+  var html='<div style="background:var(--off-white);border-radius:14px;padding:14px 12px;margin-top:6px">';
   html+='<div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:'+jColor+';margin-bottom:12px">'+(journey==='client'?'Client':'Prospect')+' Journey · Stage '+cur+' of 5 · '+STGS[cur-1]+'</div>';
   html+='<div style="display:flex;align-items:center;margin:0 2px">';
   for(var i=1;i<=5;i++){
     var done=i<cur,active=i===cur;
     var bg=active?'var(--ink)':done?jColor:'white';
-    var border=active?'2.5px solid var(--ink)':done?'2px solid '+jColor:'2px solid var(--timber-light)';
+    var border=active?'2.5px solid var(--ink)':done?'2px solid '+jColor:'2px solid var(--rule)';
     var col=(active||done)?'white':'#ccc';
     var tcol=done?jColor:active?'var(--ink)':'#ccc';
     html+='<div style="display:flex;flex-direction:column;align-items:center;flex:1">';
     html+='<button onclick="setProjectStage(\''+clientId+'\',\''+proj.id+'\',\''+i+'\')" style="width:32px;height:32px;border-radius:50%;border:'+border+';background:'+bg+';color:'+col+';font-size:12px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center">'+(done?'✓':i)+'</button>';
     html+='<div style="font-size:9px;color:'+tcol+';margin-top:5px;text-align:center;font-weight:'+(active?'600':'400')+'">'+STGS[i-1]+'</div>';
     html+='</div>';
-    if(i<5)html+='<div style="height:2px;background:'+(done?jColor:'var(--timber-light)')+';flex:0 0 10px;margin-bottom:18px"></div>';
+    if(i<5)html+='<div style="height:2px;background:'+(done?jColor:'var(--rule)')+';flex:0 0 10px;margin-bottom:18px"></div>';
   }
   html+='</div>';
   // Action buttons
@@ -2136,21 +2167,21 @@ function buildProjectStepper(clientId,proj){
     html+='<div style="display:flex;gap:6px;margin-top:12px">';
     [{key:'prospect',label:'Prospect',icon:'🔍'},{key:'active-client',label:'WIP',icon:'🔨'},{key:'closed-lost',label:'Lost',icon:'✕'}].forEach(function(s){
       var act=s.key===proj.status;
-      html+='<button onclick="setProjectStatus(\''+clientId+'\',\''+proj.id+'\',\''+s.key+'\')" style="flex:1;padding:8px 4px;border-radius:20px;border:1.5px solid '+(act?'var(--ink)':'var(--timber-light)')+';background:'+(act?'var(--ink)':'white')+';font-family:system-ui,sans-serif;font-size:11px;font-weight:'+(act?'600':'400')+';cursor:pointer;color:'+(act?'var(--parchment)':'#aaa')+'">'+s.icon+' '+s.label+'</button>';
+      html+='<button onclick="setProjectStatus(\''+clientId+'\',\''+proj.id+'\',\''+s.key+'\')" style="flex:1;padding:8px 4px;border-radius:20px;border:1.5px solid '+(act?'var(--ink)':'var(--rule)')+';background:'+(act?'var(--ink)':'white')+';font-family:system-ui,sans-serif;font-size:11px;font-weight:'+(act?'600':'400')+';cursor:pointer;color:'+(act?'var(--off-white)':'#aaa')+'">'+s.icon+' '+s.label+'</button>';
     });
     html+='</div>';
     if(cur===5){
-      html+='<div style="margin-top:10px;background:var(--sage-light);border-radius:10px;padding:12px;text-align:center">';
-      html+='<div style="font-size:12px;color:var(--sage);margin-bottom:8px">Approved — convert to active client</div>';
-      html+='<button onclick="convertProject(\''+clientId+'\',\''+proj.id+'\')" style="width:100%;background:var(--sage);color:white;border:none;border-radius:8px;padding:10px;font-family:system-ui,sans-serif;font-size:13px;font-weight:600;cursor:pointer">Convert to Client →</button>';
+      html+='<div style="margin-top:10px;background:var(--forge-pale);border-radius:10px;padding:12px;text-align:center">';
+      html+='<div style="font-size:12px;color:var(--sand);margin-bottom:8px">Approved — convert to active client</div>';
+      html+='<button onclick="convertProject(\''+clientId+'\',\''+proj.id+'\')" style="width:100%;background:var(--sand);color:white;border:none;border-radius:8px;padding:10px;font-family:system-ui,sans-serif;font-size:13px;font-weight:600;cursor:pointer">Convert to Client →</button>';
       html+='</div>';
     }
   }else{
     html+='<div style="display:flex;gap:8px;margin-top:12px">';
     if(cur<5){
-      html+='<button onclick="advProject(\''+clientId+'\',\''+proj.id+'\')" style="flex:1;padding:10px;border-radius:10px;border:none;background:var(--sage);color:white;font-family:system-ui,sans-serif;font-size:13px;font-weight:500;cursor:pointer">Advance → '+STGS[cur]+'</button>';
+      html+='<button onclick="advProject(\''+clientId+'\',\''+proj.id+'\')" style="flex:1;padding:10px;border-radius:10px;border:none;background:var(--sand);color:white;font-family:system-ui,sans-serif;font-size:13px;font-weight:500;cursor:pointer">Advance → '+STGS[cur]+'</button>';
     }else{
-      html+='<button onclick="promptInvoiceComplete(\''+clientId+'\',\''+proj.id+'\')" style="flex:1;padding:10px;border-radius:10px;border:none;background:var(--sage);color:white;font-family:system-ui,sans-serif;font-size:13px;font-weight:600;cursor:pointer">Mark Complete ✓</button>';
+      html+='<button onclick="promptInvoiceComplete(\''+clientId+'\',\''+proj.id+'\')" style="flex:1;padding:10px;border-radius:10px;border:none;background:var(--sand);color:white;font-family:system-ui,sans-serif;font-size:13px;font-weight:600;cursor:pointer">Mark Complete ✓</button>';
     }
     html+='</div>';
   }
@@ -2204,9 +2235,9 @@ function promptInvoiceComplete(clientId,projId){
   var overlay=document.createElement('div');
   overlay.style.cssText='position:fixed;inset:0;background:rgba(26,22,18,.65);z-index:400;display:flex;align-items:flex-end';
   var inner=document.createElement('div');inner.style.cssText='background:white;border-radius:20px 20px 0 0;width:100%;padding:24px 20px 40px';
-  inner.innerHTML='<div style="font-family:Georgia,serif;font-size:20px;margin-bottom:8px">Before marking complete</div><div style="font-size:13px;color:#666;line-height:1.6;margin-bottom:20px">Has the final invoice been sent and payment received?</div>';
+  inner.innerHTML='<div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;margin-bottom:8px">Before marking complete</div><div style="font-size:13px;color:#666;line-height:1.6;margin-bottom:20px">Has the final invoice been sent and payment received?</div>';
   var btns=document.createElement('div');btns.style.cssText='display:flex;flex-direction:column;gap:10px';
-  var b1=document.createElement('button');b1.style.cssText='background:var(--sage);color:white;border:none;border-radius:12px;padding:14px;font-family:system-ui,sans-serif;font-size:14px;font-weight:600;cursor:pointer';b1.textContent='Yes — invoiced and paid ✓';
+  var b1=document.createElement('button');b1.style.cssText='background:var(--sand);color:white;border:none;border-radius:12px;padding:14px;font-family:system-ui,sans-serif;font-size:14px;font-weight:600;cursor:pointer';b1.textContent='Yes — invoiced and paid ✓';
   b1.onclick=function(){overlay.remove();setProjectStatus(clientId,projId,'complete');};
   var b2=document.createElement('button');b2.style.cssText='background:var(--amber);color:white;border:none;border-radius:12px;padding:14px;font-family:system-ui,sans-serif;font-size:14px;cursor:pointer';b2.textContent='Mark complete — invoice still pending';
   b2.onclick=function(){overlay.remove();setProjectStatus(clientId,projId,'complete');showToast('Marked complete — send invoice');};
@@ -2394,18 +2425,18 @@ function printSpecSheet(clientId,projId){
   if(dimItems.length){
     dimHtml='<table style="width:100%;border-collapse:collapse;margin-bottom:16px;font-size:13px">';
     dimItems.forEach(function(d){
-      dimHtml+='<tr><td style="padding:6px 10px;background:#faf7f2;font-weight:600;width:35%;border:1px solid #e8e0d5;font-size:12px;color:#7a4520">'+d.label+'</td>'
-        +'<td style="padding:6px 10px;border:1px solid #e8e0d5;color:#1a1612">'+d.val+'</td></tr>';
+      dimHtml+='<tr><td style="padding:6px 10px;background:#FAF9F7;font-weight:600;width:35%;border:1px solid #e8e0d5;font-size:12px;color:#9A3D06">'+d.label+'</td>'
+        +'<td style="padding:6px 10px;border:1px solid #e8e0d5;color:#1A1410">'+d.val+'</td></tr>';
     });
-    if(p.material)dimHtml+='<tr><td style="padding:6px 10px;background:#faf7f2;font-weight:600;border:1px solid #e8e0d5;font-size:12px;color:#7a4520">Material</td><td style="padding:6px 10px;border:1px solid #e8e0d5;color:#1a1612">'+p.material+'</td></tr>';
-    if(p.finish)dimHtml+='<tr><td style="padding:6px 10px;background:#faf7f2;font-weight:600;border:1px solid #e8e0d5;font-size:12px;color:#7a4520">Finish</td><td style="padding:6px 10px;border:1px solid #e8e0d5;color:#1a1612">'+p.finish+'</td></tr>';
-    if(p.specs)dimHtml+='<tr><td style="padding:6px 10px;background:#faf7f2;font-weight:600;border:1px solid #e8e0d5;font-size:12px;color:#7a4520;vertical-align:top">Specifications</td><td style="padding:6px 10px;border:1px solid #e8e0d5;color:#1a1612;line-height:1.5">'+p.specs+'</td></tr>';
+    if(p.material)dimHtml+='<tr><td style="padding:6px 10px;background:#FAF9F7;font-weight:600;border:1px solid #e8e0d5;font-size:12px;color:#9A3D06">Material</td><td style="padding:6px 10px;border:1px solid #e8e0d5;color:#1A1410">'+p.material+'</td></tr>';
+    if(p.finish)dimHtml+='<tr><td style="padding:6px 10px;background:#FAF9F7;font-weight:600;border:1px solid #e8e0d5;font-size:12px;color:#9A3D06">Finish</td><td style="padding:6px 10px;border:1px solid #e8e0d5;color:#1A1410">'+p.finish+'</td></tr>';
+    if(p.specs)dimHtml+='<tr><td style="padding:6px 10px;background:#FAF9F7;font-weight:600;border:1px solid #e8e0d5;font-size:12px;color:#9A3D06;vertical-align:top">Specifications</td><td style="padding:6px 10px;border:1px solid #e8e0d5;color:#1A1410;line-height:1.5">'+p.specs+'</td></tr>';
     dimHtml+='</table>';
   } else if(p.material||p.finish||p.specs){
     dimHtml='<table style="width:100%;border-collapse:collapse;margin-bottom:16px;font-size:13px">';
-    if(p.material)dimHtml+='<tr><td style="padding:6px 10px;background:#faf7f2;font-weight:600;width:35%;border:1px solid #e8e0d5;font-size:12px;color:#7a4520">Material</td><td style="padding:6px 10px;border:1px solid #e8e0d5">'+p.material+'</td></tr>';
-    if(p.finish)dimHtml+='<tr><td style="padding:6px 10px;background:#faf7f2;font-weight:600;border:1px solid #e8e0d5;font-size:12px;color:#7a4520">Finish</td><td style="padding:6px 10px;border:1px solid #e8e0d5">'+p.finish+'</td></tr>';
-    if(p.specs)dimHtml+='<tr><td style="padding:6px 10px;background:#faf7f2;font-weight:600;border:1px solid #e8e0d5;font-size:12px;color:#7a4520;vertical-align:top">Specifications</td><td style="padding:6px 10px;border:1px solid #e8e0d5;line-height:1.5">'+p.specs+'</td></tr>';
+    if(p.material)dimHtml+='<tr><td style="padding:6px 10px;background:#FAF9F7;font-weight:600;width:35%;border:1px solid #e8e0d5;font-size:12px;color:#9A3D06">Material</td><td style="padding:6px 10px;border:1px solid #e8e0d5">'+p.material+'</td></tr>';
+    if(p.finish)dimHtml+='<tr><td style="padding:6px 10px;background:#FAF9F7;font-weight:600;border:1px solid #e8e0d5;font-size:12px;color:#9A3D06">Finish</td><td style="padding:6px 10px;border:1px solid #e8e0d5">'+p.finish+'</td></tr>';
+    if(p.specs)dimHtml+='<tr><td style="padding:6px 10px;background:#FAF9F7;font-weight:600;border:1px solid #e8e0d5;font-size:12px;color:#9A3D06;vertical-align:top">Specifications</td><td style="padding:6px 10px;border:1px solid #e8e0d5;line-height:1.5">'+p.specs+'</td></tr>';
     dimHtml+='</table>';
   }
 
@@ -2432,8 +2463,8 @@ function printSpecSheet(clientId,projId){
 
   // Price line
   var priceHtml='';
-  if(p.free){priceHtml='<div style="font-size:15px;font-weight:600;color:#1a1612;margin-bottom:16px">Free job</div>';}
-  else if(p.val&&parseFloat(p.val)>0){priceHtml='<div style="font-size:15px;font-weight:600;color:#1a1612;margin-bottom:16px">$'+Number(p.val).toLocaleString()+' ex GST</div>';}
+  if(p.free){priceHtml='<div style="font-size:15px;font-weight:600;color:#1A1410;margin-bottom:16px">Free job</div>';}
+  else if(p.val&&parseFloat(p.val)>0){priceHtml='<div style="font-size:15px;font-weight:600;color:#1A1410;margin-bottom:16px">$'+Number(p.val).toLocaleString()+' ex GST</div>';}
 
   // Ruled workshop notes (8 lines)
   var notesLines='';
@@ -2445,11 +2476,11 @@ function printSpecSheet(clientId,projId){
   var doc=document.getElementById('spec-print-doc');
   doc.innerHTML=
     // Header
-    '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #1a1612">'
+    '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #1A1410">'
     +'<div>'
     +'<img src="twr-logo.png" style="max-height:44px;display:block;margin-bottom:6px" onerror="this.remove()">'
-    +'<div style="font-family:Georgia,serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#1a1612">The Wattle Road</div>'
-    +'<div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#b5723a;margin-top:2px">Made With Care</div>'
+    +'<div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#1A1410">The Wattle Road</div>'
+    +'<div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#C4530A;margin-top:2px">Made With Care</div>'
     +'</div>'
     +'<div style="text-align:right;font-size:10px;color:#999;line-height:1.7">'
     +'thewattleroad.com.au<br>dave@thewattleroad.com.au<br>0429 604 564'
@@ -2460,7 +2491,7 @@ function printSpecSheet(clientId,projId){
     +c.name+(c.phone?' &middot; '+c.phone:'')+(c.email?' &middot; '+c.email:'')+(c.address?' &middot; '+c.address:'')
     +'</div>'
     // Title
-    +'<div style="font-family:Georgia,serif;font-size:26px;font-weight:400;color:#1a1612;margin-bottom:14px;line-height:1.2">'+p.title+'</div>'
+    +'<div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:26px;font-weight:400;color:#1A1410;margin-bottom:14px;line-height:1.2">'+p.title+'</div>'
     // Description
     +descHtml
     // Photo
@@ -2470,7 +2501,7 @@ function printSpecSheet(clientId,projId){
     // Price
     +priceHtml
     // Workshop notes
-    +'<div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#b5723a;margin-bottom:10px;margin-top:4px;border-top:1px solid #e8e0d5;padding-top:14px">Workshop Notes</div>'
+    +'<div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#C4530A;margin-bottom:10px;margin-top:4px;border-top:1px solid #e8e0d5;padding-top:14px">Workshop Notes</div>'
     +notesLines
     // Footer
     +'<div style="margin-top:24px;border-top:1px solid #ddd;padding-top:8px;display:flex;justify-content:space-between;font-size:10px;color:#aaa">'
@@ -2612,10 +2643,10 @@ function renderBugList(){
           <div style="flex:1">
             <div style="font-size:12px;color:#aaa;margin-bottom:4px">${b.from||'library'} · ${fdShort(b.date)||'—'}</div>
             <div style="font-size:14px;line-height:1.5">${b.note}</div>
-            ${b.resolved?`<div style="font-size:11px;color:var(--sage);margin-top:6px">✓ Resolved</div>`:''}
+            ${b.resolved?`<div style="font-size:11px;color:var(--sand);margin-top:6px">✓ Resolved</div>`:''}
           </div>
           <div style="display:flex;flex-direction:column;gap:6px;flex-shrink:0">
-            <button onclick="toggleBugResolved(${i})" style="background:${b.resolved?'var(--sage-light)':'var(--parchment)'};border:none;border-radius:8px;padding:5px 10px;font-size:11px;color:${b.resolved?'var(--sage)':'#888'};cursor:pointer;font-family:system-ui,sans-serif">${b.resolved?'✓ Done':'Mark done'}</button>
+            <button onclick="toggleBugResolved(${i})" style="background:${b.resolved?'var(--forge-pale)':'var(--off-white)'};border:none;border-radius:8px;padding:5px 10px;font-size:11px;color:${b.resolved?'var(--sand)':'#888'};cursor:pointer;font-family:system-ui,sans-serif">${b.resolved?'✓ Done':'Mark done'}</button>
             <button onclick="deleteBug(${i})" style="background:none;border:none;font-size:11px;color:var(--red);cursor:pointer;font-family:system-ui,sans-serif">Remove</button>
           </div>
         </div>
@@ -2711,7 +2742,7 @@ function renderProvChain(stock) {
           </div>
         </div>
         <div style="display:flex;gap:5px;align-items:center;flex-shrink:0;margin-left:8px">
-          <button onclick="editProvStep('${stock.id}',${i})" style="background:var(--parchment);border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;color:var(--timber-dark)">Edit</button>
+          <button onclick="editProvStep('${stock.id}',${i})" style="background:var(--off-white);border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer;color:var(--forge-deep)">Edit</button>
           <button onclick="removeProvStep('${stock.id}',${i})" style="background:none;border:none;font-size:14px;cursor:pointer;color:#ccc;line-height:1">✕</button>
         </div>
       </div>`).join('')}
@@ -2806,16 +2837,16 @@ function renderContactsBlock(contacts, entityId, entityType) {
   const TITLE_OPTS = ['Owner','Project Manager','Architect','Site Contact','Interior Designer','Builder','Principal','Partner','Director','Assistant','Other'];
   if (!ct.length) return `<div style="font-size:13px;color:#aaa;padding:8px 0">No contacts added yet.</div>`;
   return ct.map((c, i) => `
-    <div style="background:white;border:1px solid var(--timber-light);border-radius:10px;padding:11px 13px;margin-bottom:8px">
+    <div style="background:white;border:1px solid var(--rule);border-radius:10px;padding:11px 13px;margin-bottom:8px">
       <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
         <div style="flex:1">
           <div style="font-weight:500;font-size:14px">${c.name||'Unnamed'}</div>
-          ${c.title?`<div style="font-size:11px;color:var(--timber);margin-top:1px;letter-spacing:.04em;text-transform:uppercase">${c.title}</div>`:''}
+          ${c.title?`<div style="font-size:11px;color:var(--forge);margin-top:1px;letter-spacing:.04em;text-transform:uppercase">${c.title}</div>`:''}
           ${c.phone?`<div style="margin-top:6px"><a href="tel:${c.phone}" style="font-size:13px;color:var(--ink);text-decoration:none">📞 ${c.phone}</a></div>`:''}
-          ${c.email?`<div style="margin-top:3px"><a href="mailto:${c.email}" style="font-size:13px;color:var(--timber);text-decoration:none">✉️ ${c.email}</a></div>`:''}
+          ${c.email?`<div style="margin-top:3px"><a href="mailto:${c.email}" style="font-size:13px;color:var(--forge);text-decoration:none">✉️ ${c.email}</a></div>`:''}
         </div>
         <div style="display:flex;gap:5px">
-          <button onclick="editContact('${entityType}','${entityId}',${i})" style="background:var(--parchment);border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer">Edit</button>
+          <button onclick="editContact('${entityType}','${entityId}',${i})" style="background:var(--off-white);border:none;border-radius:6px;padding:4px 8px;font-size:11px;cursor:pointer">Edit</button>
           <button onclick="removeContact('${entityType}','${entityId}',${i})" style="background:none;border:none;font-size:14px;cursor:pointer;color:#ccc">✕</button>
         </div>
       </div>
@@ -2981,48 +3012,48 @@ function renderDashboard() {
 
   // ── PERIOD HEADER ──
   html += '<div style="background:var(--ink);border-radius:14px;padding:16px;margin-bottom:12px;color:white">';
-  html += '<div style="font-size:11px;color:var(--dust);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px">'+bounds.label+'</div>';
+  html += '<div style="font-size:11px;color:var(--sand);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px">'+bounds.label+'</div>';
   html += '<div style="display:flex;justify-content:space-between;align-items:flex-end">';
-  html += '<div><div style="font-size:28px;font-weight:700;font-family:Georgia,serif">$'+fmtNum(deals.wonRev)+'</div><div style="font-size:12px;color:var(--dust);margin-top:2px">Revenue closed</div></div>';
-  html += '<div style="text-align:right"><div style="font-size:22px;font-weight:700;font-family:Georgia,serif">'+deals.won.length+'</div><div style="font-size:12px;color:var(--dust)">Won</div></div>';
+  html += '<div><div style="font-size:28px;font-weight:700;font-family:'Cormorant Garamond',Georgia,serif">$'+fmtNum(deals.wonRev)+'</div><div style="font-size:12px;color:var(--sand);margin-top:2px">Revenue closed</div></div>';
+  html += '<div style="text-align:right"><div style="font-size:22px;font-weight:700;font-family:'Cormorant Garamond',Georgia,serif">'+deals.won.length+'</div><div style="font-size:12px;color:var(--sand)">Won</div></div>';
   html += '</div>';
   html += '<div style="margin-top:14px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;overflow:hidden">';
-  html += '<div style="height:100%;border-radius:2px;background:var(--timber);width:'+bounds.pctElapsed+'%"></div></div>';
-  html += '<div style="display:flex;justify-content:space-between;margin-top:5px;font-size:10px;color:var(--dust)"><span>Day '+bounds.elapsed+' of '+bounds.days+'</span><span>'+bounds.remaining+' days left</span></div>';
+  html += '<div style="height:100%;border-radius:2px;background:var(--forge);width:'+bounds.pctElapsed+'%"></div></div>';
+  html += '<div style="display:flex;justify-content:space-between;margin-top:5px;font-size:10px;color:var(--sand)"><span>Day '+bounds.elapsed+' of '+bounds.days+'</span><span>'+bounds.remaining+' days left</span></div>';
   html += '</div>';
 
   // ── GOALS TRACKER ──
   if (gRev > 0 || gWins > 0) {
-    html += '<div style="background:white;border:1px solid var(--timber-light);border-radius:14px;padding:14px;margin-bottom:12px">';
-    html += '<div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--timber);margin-bottom:12px">Goal Tracker</div>';
+    html += '<div style="background:white;border:1px solid var(--rule);border-radius:14px;padding:14px;margin-bottom:12px">';
+    html += '<div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--forge);margin-bottom:12px">Goal Tracker</div>';
 
     if (gRev > 0) {
-      const paceColor = onTrackRev ? 'var(--sage)' : 'var(--red)';
+      const paceColor = onTrackRev ? 'var(--sand)' : 'var(--red)';
       html += '<div style="margin-bottom:12px">';
       html += '<div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:13px;font-weight:500">Revenue</span><span style="font-size:13px;color:#888">$'+fmtNum(deals.wonRev)+' / $'+fmtNum(gRev)+'</span></div>';
-      html += '<div style="height:8px;background:var(--parchment);border-radius:4px;overflow:hidden"><div style="height:100%;border-radius:4px;background:'+paceColor+';width:'+revPct+'%;transition:width .5s"></div></div>';
+      html += '<div style="height:8px;background:var(--off-white);border-radius:4px;overflow:hidden"><div style="height:100%;border-radius:4px;background:'+paceColor+';width:'+revPct+'%;transition:width .5s"></div></div>';
       html += '<div style="display:flex;justify-content:space-between;margin-top:4px;font-size:11px;color:#aaa">';
       html += '<span>'+revPct+'% of goal</span>';
       if (gRev > deals.wonRev && bounds.remaining > 0) {
         html += '<span style="color:'+paceColor+'">Need $'+fmtNum(Math.round(dailyRevNeeded))+'/day</span>';
       } else if (deals.wonRev >= gRev) {
-        html += '<span style="color:var(--sage)">✓ Goal reached!</span>';
+        html += '<span style="color:var(--sand)">✓ Goal reached!</span>';
       }
       html += '</div>';
-      html += '<div style="margin-top:6px;font-size:11px;background:var(--parchment);border-radius:8px;padding:6px 10px;color:#666">At current pace: <strong>$'+fmtNum(projRev)+'</strong> projected · '+(onTrackRev?'<span style="color:var(--sage)">On track ↗</span>':'<span style="color:var(--red)">Behind pace ↘</span>')+'</div>';
+      html += '<div style="margin-top:6px;font-size:11px;background:var(--off-white);border-radius:8px;padding:6px 10px;color:#666">At current pace: <strong>$'+fmtNum(projRev)+'</strong> projected · '+(onTrackRev?'<span style="color:var(--sand)">On track ↗</span>':'<span style="color:var(--red)">Behind pace ↘</span>')+'</div>';
       html += '</div>';
     }
 
     if (gWins > 0) {
       html += '<div>';
       html += '<div style="display:flex;justify-content:space-between;margin-bottom:5px"><span style="font-size:13px;font-weight:500">Wins</span><span style="font-size:13px;color:#888">'+deals.won.length+' / '+gWins+'</span></div>';
-      html += '<div style="height:8px;background:var(--parchment);border-radius:4px;overflow:hidden"><div style="height:100%;border-radius:4px;background:var(--sage);width:'+winsPct+'%;transition:width .5s"></div></div>';
-      html += '<div style="font-size:11px;color:#aaa;margin-top:4px">'+winsPct+'% of goal'+( deals.won.length >= gWins ? ' · <span style="color:var(--sage)">✓ Goal reached!</span>' : '')+'</div>';
+      html += '<div style="height:8px;background:var(--off-white);border-radius:4px;overflow:hidden"><div style="height:100%;border-radius:4px;background:var(--sand);width:'+winsPct+'%;transition:width .5s"></div></div>';
+      html += '<div style="font-size:11px;color:#aaa;margin-top:4px">'+winsPct+'% of goal'+( deals.won.length >= gWins ? ' · <span style="color:var(--sand)">✓ Goal reached!</span>' : '')+'</div>';
       html += '</div>';
     }
     html += '</div>';
   } else {
-    html += '<div style="background:var(--parchment);border-radius:14px;padding:14px;margin-bottom:12px;text-align:center;cursor:pointer" onclick="openGoalsModal()">';
+    html += '<div style="background:var(--off-white);border-radius:14px;padding:14px;margin-bottom:12px;text-align:center;cursor:pointer" onclick="openGoalsModal()">';
     html += '<div style="font-size:22px;margin-bottom:6px">🎯</div>';
     html += '<div style="font-size:13px;font-weight:500;color:var(--ink)">Set your goals</div>';
     html += '<div style="font-size:12px;color:#aaa;margin-top:3px">Tap to set revenue and win targets</div>';
@@ -3030,13 +3061,13 @@ function renderDashboard() {
   }
 
   // ── PIPELINE FUNNEL ──
-  html += '<div style="background:white;border:1px solid var(--timber-light);border-radius:14px;padding:14px;margin-bottom:12px">';
-  html += '<div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--timber);margin-bottom:12px">Pipeline Funnel</div>';
+  html += '<div style="background:white;border:1px solid var(--rule);border-radius:14px;padding:14px;margin-bottom:12px">';
+  html += '<div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--forge);margin-bottom:12px">Pipeline Funnel</div>';
   for (let i = 0; i < 5; i++) {
     const w = Math.round(stageCount[i] / maxStage * 100);
     html += '<div style="margin-bottom:8px">';
     html += '<div style="display:flex;justify-content:space-between;margin-bottom:3px"><span style="font-size:12px;color:#666">'+stageLabels[i]+'</span><span style="font-size:12px;font-weight:600;color:var(--ink)">'+stageCount[i]+'</span></div>';
-    html += '<div style="height:6px;background:var(--parchment);border-radius:3px;overflow:hidden"><div style="height:100%;border-radius:3px;background:var(--timber);opacity:'+(1 - i*0.15)+';width:'+(stageCount[i]>0?Math.max(w,8):0)+'%"></div></div>';
+    html += '<div style="height:6px;background:var(--off-white);border-radius:3px;overflow:hidden"><div style="height:100%;border-radius:3px;background:var(--forge);opacity:'+(1 - i*0.15)+';width:'+(stageCount[i]>0?Math.max(w,8):0)+'%"></div></div>';
     html += '</div>';
   }
   html += '</div>';
@@ -3044,27 +3075,27 @@ function renderDashboard() {
   // ── KEY METRICS ──
   html += '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px">';
 
-  html += metric('Win Rate', deals.winRate+'%', deals.won.length+' won · '+deals.lost.length+' lost', deals.winRate >= 50 ? 'var(--sage)' : 'var(--amber)');
-  html += metric('Avg Deal', '$'+fmtNum(deals.won.length ? Math.round(deals.wonRev/deals.won.length) : 0), 'per closed commission', 'var(--timber)');
+  html += metric('Win Rate', deals.winRate+'%', deals.won.length+' won · '+deals.lost.length+' lost', deals.winRate >= 50 ? 'var(--sand)' : 'var(--amber)');
+  html += metric('Avg Deal', '$'+fmtNum(deals.won.length ? Math.round(deals.wonRev/deals.won.length) : 0), 'per closed commission', 'var(--forge)');
   html += metric('Pipeline', '$'+fmtNum(deals.pipelineRev), deals.pipeline.length+' active deals', 'var(--blue)');
   html += metric('Avg Close', deals.avgClose !== null ? deals.avgClose+'d' : '—', deals.avgClose !== null ? 'days to win' : 'no data yet', 'var(--purple)');
 
   html += '</div>';
 
   // ── WON / LOST BREAKDOWN ──
-  html += '<div style="background:white;border:1px solid var(--timber-light);border-radius:14px;padding:14px;margin-bottom:12px">';
-  html += '<div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--timber);margin-bottom:10px">Won & Lost · '+bounds.label+'</div>';
+  html += '<div style="background:white;border:1px solid var(--rule);border-radius:14px;padding:14px;margin-bottom:12px">';
+  html += '<div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--forge);margin-bottom:10px">Won & Lost · '+bounds.label+'</div>';
   if (!deals.won.length && !deals.lost.length) {
     html += '<div style="font-size:13px;color:#aaa;text-align:center;padding:10px 0">No closed deals this period</div>';
   } else {
     deals.won.forEach(p => {
-      html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--parchment)">';
+      html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--off-white)">';
       html += '<div><div style="font-size:13px;font-weight:500">'+p.name+'</div><div style="font-size:11px;color:#aaa">'+p.type+(p.closedDate?' · Closed '+fdShort(p.closedDate):'')+'</div></div>';
-      html += '<div style="font-size:13px;font-weight:600;color:var(--sage)">$'+fmtNum(p.val||0)+'</div>';
+      html += '<div style="font-size:13px;font-weight:600;color:var(--sand)">$'+fmtNum(p.val||0)+'</div>';
       html += '</div>';
     });
     deals.lost.forEach(p => {
-      html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--parchment)">';
+      html += '<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--off-white)">';
       html += '<div><div style="font-size:13px;font-weight:500;color:#aaa">'+p.name+'</div><div style="font-size:11px;color:#ccc">Lost'+( p.closedDate?' · '+fdShort(p.closedDate):'')+'</div></div>';
       html += '<div style="font-size:13px;color:#ccc">$'+fmtNum(p.val||0)+'</div>';
       html += '</div>';
@@ -3076,20 +3107,20 @@ function renderDashboard() {
   const stockAvail = stock.filter(s=>s.status==='available').length;
   const stockInUse = stock.filter(s=>s.status==='in-use').length;
   const totalVol = stock.reduce((a,s)=>a+(parseFloat(s.vol)||0),0);
-  html += '<div style="background:white;border:1px solid var(--timber-light);border-radius:14px;padding:14px">';
-  html += '<div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--timber);margin-bottom:10px">Stock Snapshot</div>';
+  html += '<div style="background:white;border:1px solid var(--rule);border-radius:14px;padding:14px">';
+  html += '<div style="font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--forge);margin-bottom:10px">Stock Snapshot</div>';
   html += '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px;text-align:center">';
-  html += miniStat(stockAvail, 'Available', 'var(--sage)');
+  html += miniStat(stockAvail, 'Available', 'var(--sand)');
   html += miniStat(stockInUse, 'In Use', 'var(--blue)');
-  html += miniStat(totalVol.toFixed(1)+'m³', 'Total Vol', 'var(--timber)');
+  html += miniStat(totalVol.toFixed(1)+'m³', 'Total Vol', 'var(--forge)');
   html += '</div></div>';
 
   body.innerHTML = html;
 }
 
 function metric(label, value, sub, color) {
-  return '<div style="background:white;border:1px solid var(--timber-light);border-radius:12px;padding:14px">'
-    + '<div style="font-size:22px;font-weight:700;font-family:Georgia,serif;color:'+color+'">'+value+'</div>'
+  return '<div style="background:white;border:1px solid var(--rule);border-radius:12px;padding:14px">'
+    + '<div style="font-size:22px;font-weight:700;font-family:'Cormorant Garamond',Georgia,serif;color:'+color+'">'+value+'</div>'
     + '<div style="font-size:12px;font-weight:500;color:var(--ink);margin-top:2px">'+label+'</div>'
     + '<div style="font-size:11px;color:#aaa;margin-top:1px">'+sub+'</div>'
     + '</div>';
@@ -3312,12 +3343,12 @@ function showLocDetail(id) {
     ${d.contact||d.phone?`<div class="detail-section"><div class="detail-section-title">Contact</div>
       <div class="detail-grid">
         ${d.contact?`<div class="detail-field"><div class="detail-field-label">Contact</div><div class="detail-field-value">${d.contact}</div></div>`:''}
-        ${d.phone?`<div class="detail-field"><div class="detail-field-label">Phone</div><div class="detail-field-value"><a href="tel:${d.phone}" style="color:var(--timber)">${d.phone}</a></div></div>`:''}
+        ${d.phone?`<div class="detail-field"><div class="detail-field-label">Phone</div><div class="detail-field-value"><a href="tel:${d.phone}" style="color:var(--forge)">${d.phone}</a></div></div>`:''}
       </div></div>`:''}
     ${d.notes?`<div class="detail-section"><div class="detail-section-title">Notes</div><div class="detail-notes">${d.notes}</div></div>`:''}
     ${accessHtml}
     ${stockHere.length?`<div class="detail-section"><div class="detail-section-title">Stock Here (${stockHere.length})</div>
-      ${stockHere.map(s=>`<div style="background:white;border:1px solid var(--timber-light);border-radius:10px;padding:10px 13px;margin-bottom:6px;cursor:pointer" onclick="showSD('${s.id}')">
+      ${stockHere.map(s=>`<div style="background:white;border:1px solid var(--rule);border-radius:10px;padding:10px 13px;margin-bottom:6px;cursor:pointer" onclick="showSD('${s.id}')">
         <div style="font-weight:500;font-size:13px">${s.species} · ${s.era}</div>
         <div style="font-size:11px;color:#888;margin-top:2px">${s.dim||''} · ${s.vol}m³</div>
       </div>`).join('')}
@@ -3455,15 +3486,15 @@ function goToBugs(){
   var inn=document.createElement('div');
   inn.style.cssText='background:white;border-radius:20px 20px 0 0;width:100%;padding:20px 20px 40px';
   var ttl=document.createElement('div');
-  ttl.style.cssText='font-family:Georgia,serif;font-size:18px;margin-bottom:12px';
+  ttl.style.cssText='font-family:'Cormorant Garamond',Georgia,serif;font-size:18px;margin-bottom:12px';
   ttl.textContent='Report a bug';
   var ta=document.createElement('textarea');
-  ta.style.cssText='width:100%;background:#f5f0e8;border:1.5px solid #e8d5bd;border-radius:10px;padding:10px;font-family:-apple-system,sans-serif;font-size:14px;min-height:100px;outline:none';
+  ta.style.cssText='width:100%;background:#FAF9F7;border:1.5px solid #E5E0D8;border-radius:10px;padding:10px;font-family:-apple-system,sans-serif;font-size:14px;min-height:100px;outline:none';
   ta.placeholder='Describe what happened...';
   var row=document.createElement('div');
   row.style.cssText='display:flex;gap:8px;margin-top:12px';
   var send=document.createElement('button');
-  send.style.cssText='flex:1;background:#1a1612;color:#f5f0e8;border:none;border-radius:10px;padding:12px;font-family:system-ui,sans-serif;font-size:14px;cursor:pointer';
+  send.style.cssText='flex:1;background:#1A1410;color:#FAF9F7;border:none;border-radius:10px;padding:12px;font-family:system-ui,sans-serif;font-size:14px;cursor:pointer';
   send.textContent='Save bug note';
   send.onclick=function(){
     var txt=ta.value.trim();
