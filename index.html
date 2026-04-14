@@ -324,18 +324,18 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
     <div class="section-label">How-To Notes</div>
     <div class="cards">
       <div class="card" style="cursor:default"><div class="card-body">
-        <div class="card-name" style="margin-bottom:6px">📤 Export Data (local → file)</div>
-        <div class="card-sub" style="line-height:1.7;margin-bottom:10px">Downloads all your data as a JSON file. Run on your local file or use the button below on the live site.</div>
+        <div class="card-name" style="margin-bottom:6px">📤 Export Data</div>
+        <div class="card-sub" style="line-height:1.7;margin-bottom:10px">Downloads all your data as twr-data.json. Do this before updating the live site from GitHub.</div>
         <button onclick="exportAllData()" style="width:100%;background:var(--ink);color:var(--off-white);border:none;border-radius:10px;padding:11px;font-family:system-ui,sans-serif;font-size:13px;font-weight:500;cursor:pointer">⬇ Download Data Now</button>
       </div></div>
       <div class="card" style="cursor:default"><div class="card-body">
-        <div class="card-name" style="margin-bottom:6px">📥 Import Data (file → live site)</div>
-        <div class="card-sub" style="line-height:1.7;margin-bottom:10px">Select your twr-data.json to load it into this browser. Use after updating the live site from GitHub.</div>
+        <div class="card-name" style="margin-bottom:6px">📥 Import Data</div>
+        <div class="card-sub" style="line-height:1.7;margin-bottom:10px">Load twr-data.json into this browser. Use after uploading a new version to GitHub.</div>
         <button onclick="importAllData()" style="width:100%;background:var(--forge);color:white;border:none;border-radius:10px;padding:11px;font-family:system-ui,sans-serif;font-size:13px;font-weight:500;cursor:pointer">⬆ Import Data Now</button>
       </div></div>
       <div class="card" style="cursor:default"><div class="card-body">
         <div class="card-name" style="margin-bottom:6px">🔄 Updating the Live Site</div>
-        <div class="card-sub" style="line-height:1.8">1. Edit the HTML file locally.<br>2. Go to github.com/ThePrivFew/twr-material-library<br>3. Add file → Upload files → drop index.html in.<br>4. Commit changes.<br>5. Wait 60 seconds, hard refresh (Cmd+Shift+R).<br>6. Use Import Data above to restore your local data.</div>
+        <div class="card-sub" style="line-height:1.8">1. Export data (button above).<br>2. Edit the HTML file locally.<br>3. Go to github.com/ThePrivFew/twr-material-library<br>4. Add file → Upload files → drop index.html in.<br>5. Commit changes.<br>6. Wait 60s, hard refresh (Cmd+Shift+R).<br>7. Import data (button above).</div>
       </div></div>
     </div>
   </div>
@@ -3539,6 +3539,37 @@ function goToBugs(){
   inn.appendChild(ttl); inn.appendChild(ta); inn.appendChild(row);
   ov.appendChild(inn); document.body.appendChild(ov);
   setTimeout(function(){ ta.focus(); }, 100);
+}
+
+
+function closeProject(clientId, projId) {
+  var data = LD('prospects');
+  var c = data.find(function(e){return e.id===clientId;});
+  if (!c) return;
+  var p = (c.projects||[]).find(function(e){return e.id===projId;});
+  if (!p) return;
+  var ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(26,22,18,.65);z-index:400;display:flex;align-items:flex-end';
+  var inn = document.createElement('div');
+  inn.style.cssText = 'background:white;border-radius:20px 20px 0 0;width:100%;padding:22px 20px 40px';
+  inn.innerHTML = '<div style="font-family:Cormorant Garamond,Georgia,serif;font-size:20px;margin-bottom:6px">Close this job?</div>'
+    + '<div style="font-size:13px;color:#888;line-height:1.6;margin-bottom:20px"><strong>'+p.title+'</strong><br>Moves out of active pipeline into Closed.</div>';
+  var btns = document.createElement('div');
+  btns.style.cssText = 'display:flex;flex-direction:column;gap:10px';
+  var b1 = document.createElement('button');
+  b1.style.cssText = 'background:var(--sand);color:white;border:none;border-radius:12px;padding:14px;font-family:system-ui,sans-serif;font-size:14px;font-weight:600;cursor:pointer';
+  b1.textContent = 'Yes — invoiced & paid ✓';
+  b1.onclick = function(){ ov.remove(); setProjectStatus(clientId,projId,'complete'); showToast('Job closed ✓'); RP(); };
+  var b2 = document.createElement('button');
+  b2.style.cssText = 'background:var(--amber);color:white;border:none;border-radius:12px;padding:14px;font-family:system-ui,sans-serif;font-size:14px;cursor:pointer';
+  b2.textContent = 'Close — invoice still pending';
+  b2.onclick = function(){ ov.remove(); setProjectStatus(clientId,projId,'complete'); showToast('Closed — remember to invoice'); RP(); };
+  var b3 = document.createElement('button');
+  b3.style.cssText = 'background:none;border:none;font-size:14px;color:#aaa;cursor:pointer;padding:8px;font-family:system-ui,sans-serif';
+  b3.textContent = 'Cancel';
+  b3.onclick = function(){ ov.remove(); };
+  btns.appendChild(b1); btns.appendChild(b2); btns.appendChild(b3);
+  inn.appendChild(btns); ov.appendChild(inn); document.body.appendChild(ov);
 }
 
 // Keep old name as alias
