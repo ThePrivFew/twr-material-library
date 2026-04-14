@@ -30,7 +30,7 @@
 .hdr,.header{background:var(--white,#FFFFFF);border-bottom:1px solid var(--rule,#E5E0D8);padding:1.2rem 1.5rem;position:sticky;top:0;z-index:100;display:flex;align-items:center;justify-content:space-between}
 .hdr-mark,.header-mark{display:flex;flex-direction:column;gap:1px}
 .hdr-the,.header-the{font-family:'DM Sans',-apple-system,sans-serif;font-size:9px;font-weight:500;letter-spacing:.24em;text-transform:uppercase;color:var(--forge,#C4530A);line-height:1}
-.hdr-name,.header-name{font-family:'Cormorant Garamond','Cormorant Garamond',Georgia,serif;font-size:17px;font-weight:400;letter-spacing:.1em;text-transform:uppercase;color:var(--ink,#1A1410);line-height:1}
+.hdr-name,.header-name{font-family:Cormorant Garamond,Georgia,serif;font-size:17px;font-weight:400;letter-spacing:.1em;text-transform:uppercase;color:var(--ink,#1A1410);line-height:1}
 .hdr-sub,.header-sub{font-size:10px;font-weight:400;letter-spacing:.12em;text-transform:uppercase;color:var(--sand,#C9B99A)}
 .header-title{display:none}
 </style>
@@ -142,7 +142,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
   #spec-print-doc{display:block!important}
 }
 #spec-print-doc{display:none;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;padding:14mm 16mm;color:#1A1410}
-#spec-print-doc h1{font-family:'Cormorant Garamond',Georgia,serif;font-size:22px;margin-bottom:4px;font-weight:400}
+#spec-print-doc h1{font-family:Cormorant Garamond,Georgia,serif;font-size:22px;margin-bottom:4px;font-weight:400}
 #spec-print-doc .spec-client{font-size:12px;color:#888;margin-bottom:14px}
 #spec-print-doc .spec-desc{font-size:13px;line-height:1.7;margin-bottom:14px;color:#333}
 #spec-print-doc .spec-photo{margin-bottom:14px}
@@ -1408,7 +1408,7 @@ function promptInvoiceComplete(id) {
   inner.style.cssText = 'background:white;border-radius:20px 20px 0 0;width:100%;padding:24px 20px 40px';
 
   var title = document.createElement('div');
-  title.style.cssText = "font-family:Cormorant Garamond,Georgia,serif;font-size:20px;margin-bottom:8px";
+  title.style.cssText = 'font-family:Cormorant Garamond,Georgia,serif;font-size:20px;margin-bottom:8px';
   title.textContent = 'Before marking complete';
   inner.appendChild(title);
 
@@ -1502,7 +1502,7 @@ function viewSavedProposal(id) {
   var header = document.createElement('div');
   header.style.cssText = 'display:flex;justify-content:space-between;align-items:center;margin-bottom:12px';
   var htitle = document.createElement('div');
-  htitle.style.cssText = "font-family:Cormorant Garamond,Georgia,serif;font-size:18px";
+  htitle.style.cssText = 'font-family:Cormorant Garamond,Georgia,serif;font-size:18px';
   htitle.textContent = 'Saved Proposal';
   var closeX = document.createElement('button');
   closeX.style.cssText = 'background:none;border:none;font-size:22px;color:#aaa;cursor:pointer';
@@ -2058,7 +2058,7 @@ function showClientD(clientId){
     var journey=p.status==='closed-won'?'client':'prospect';
     return'<div style="background:white;border:1px solid var(--rule);border-radius:12px;padding:14px;margin-bottom:10px">'
       +'<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:8px">'
-      +'<div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;flex:1">'+p.title+'</div>'
+      +'<div style="font-family:Cormorant Garamond,Georgia,serif;font-size:15px;flex:1">'+p.title+'</div>'
       +'<span class="badge '+(p.status==='closed-won'?'closed-won':p.status==='active-client'?'active-client':p.status==='complete'?'complete':p.status==='closed-lost'?'grey':'prospect')+'">'+SL2[p.status]+'</span>'
       +'</div>'
       +(p.description?'<div style="font-size:12px;color:#888;margin-bottom:8px;line-height:1.6">'+p.description.substring(0,120)+(p.description.length>120?'...':'')+'</div>':'')
@@ -2235,7 +2235,7 @@ function promptInvoiceComplete(clientId,projId){
   var overlay=document.createElement('div');
   overlay.style.cssText='position:fixed;inset:0;background:rgba(26,22,18,.65);z-index:400;display:flex;align-items:flex-end';
   var inner=document.createElement('div');inner.style.cssText='background:white;border-radius:20px 20px 0 0;width:100%;padding:24px 20px 40px';
-  inner.innerHTML='<div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:20px;margin-bottom:8px">Before marking complete</div><div style="font-size:13px;color:#666;line-height:1.6;margin-bottom:20px">Has the final invoice been sent and payment received?</div>';
+  inner.innerHTML='<div style="font-family:Cormorant Garamond,Georgia,serif;font-size:20px;margin-bottom:8px">Before marking complete</div><div style="font-size:13px;color:#666;line-height:1.6;margin-bottom:20px">Has the final invoice been sent and payment received?</div>';
   var btns=document.createElement('div');btns.style.cssText='display:flex;flex-direction:column;gap:10px';
   var b1=document.createElement('button');b1.style.cssText='background:var(--sand);color:white;border:none;border-radius:12px;padding:14px;font-family:system-ui,sans-serif;font-size:14px;font-weight:600;cursor:pointer';b1.textContent='Yes — invoiced and paid ✓';
   b1.onclick=function(){overlay.remove();setProjectStatus(clientId,projId,'complete');};
@@ -2479,7 +2479,7 @@ function printSpecSheet(clientId,projId){
     '<div style="display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #1A1410">'
     +'<div>'
     +'<img src="twr-logo.png" style="max-height:44px;display:block;margin-bottom:6px" onerror="this.remove()">'
-    +'<div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#1A1410">The Wattle Road</div>'
+    +'<div style="font-family:Cormorant Garamond,Georgia,serif;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#1A1410">The Wattle Road</div>'
     +'<div style="font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:#C4530A;margin-top:2px">Made With Care</div>'
     +'</div>'
     +'<div style="text-align:right;font-size:10px;color:#999;line-height:1.7">'
@@ -2491,7 +2491,7 @@ function printSpecSheet(clientId,projId){
     +c.name+(c.phone?' &middot; '+c.phone:'')+(c.email?' &middot; '+c.email:'')+(c.address?' &middot; '+c.address:'')
     +'</div>'
     // Title
-    +'<div style="font-family:'Cormorant Garamond',Georgia,serif;font-size:26px;font-weight:400;color:#1A1410;margin-bottom:14px;line-height:1.2">'+p.title+'</div>'
+    +'<div style="font-family:Cormorant Garamond,Georgia,serif;font-size:26px;font-weight:400;color:#1A1410;margin-bottom:14px;line-height:1.2">'+p.title+'</div>'
     // Description
     +descHtml
     // Photo
@@ -3014,8 +3014,8 @@ function renderDashboard() {
   html += '<div style="background:var(--ink);border-radius:14px;padding:16px;margin-bottom:12px;color:white">';
   html += '<div style="font-size:11px;color:var(--sand);letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px">'+bounds.label+'</div>';
   html += '<div style="display:flex;justify-content:space-between;align-items:flex-end">';
-  html += '<div><div style="font-size:28px;font-weight:700;font-family:'Cormorant Garamond',Georgia,serif">$'+fmtNum(deals.wonRev)+'</div><div style="font-size:12px;color:var(--sand);margin-top:2px">Revenue closed</div></div>';
-  html += '<div style="text-align:right"><div style="font-size:22px;font-weight:700;font-family:'Cormorant Garamond',Georgia,serif">'+deals.won.length+'</div><div style="font-size:12px;color:var(--sand)">Won</div></div>';
+  html += '<div><div style="font-size:28px;font-weight:700;font-family:Cormorant Garamond,Georgia,serif">$'+fmtNum(deals.wonRev)+'</div><div style="font-size:12px;color:var(--sand);margin-top:2px">Revenue closed</div></div>';
+  html += '<div style="text-align:right"><div style="font-size:22px;font-weight:700;font-family:Cormorant Garamond,Georgia,serif">'+deals.won.length+'</div><div style="font-size:12px;color:var(--sand)">Won</div></div>';
   html += '</div>';
   html += '<div style="margin-top:14px;height:4px;background:rgba(255,255,255,.15);border-radius:2px;overflow:hidden">';
   html += '<div style="height:100%;border-radius:2px;background:var(--forge);width:'+bounds.pctElapsed+'%"></div></div>';
@@ -3120,7 +3120,7 @@ function renderDashboard() {
 
 function metric(label, value, sub, color) {
   return '<div style="background:white;border:1px solid var(--rule);border-radius:12px;padding:14px">'
-    + '<div style="font-size:22px;font-weight:700;font-family:'Cormorant Garamond',Georgia,serif;color:'+color+'">'+value+'</div>'
+    + '<div style="font-size:22px;font-weight:700;font-family:Cormorant Garamond,Georgia,serif;color:'+color+'">'+value+'</div>'
     + '<div style="font-size:12px;font-weight:500;color:var(--ink);margin-top:2px">'+label+'</div>'
     + '<div style="font-size:11px;color:#aaa;margin-top:1px">'+sub+'</div>'
     + '</div>';
@@ -3486,7 +3486,7 @@ function goToBugs(){
   var inn=document.createElement('div');
   inn.style.cssText='background:white;border-radius:20px 20px 0 0;width:100%;padding:20px 20px 40px';
   var ttl=document.createElement('div');
-  ttl.style.cssText="font-family:Cormorant Garamond,Georgia,serif;font-size:18px;margin-bottom:12px";
+  ttl.style.cssText='font-family:Cormorant Garamond,Georgia,serif;font-size:18px;margin-bottom:12px';
   ttl.textContent='Report a bug';
   var ta=document.createElement('textarea');
   ta.style.cssText='width:100%;background:#FAF9F7;border:1.5px solid #E5E0D8;border-radius:10px;padding:10px;font-family:-apple-system,sans-serif;font-size:14px;min-height:100px;outline:none';
