@@ -242,6 +242,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
     <button class="chip" onclick="setPipeF('prospect',this)">Prospects</button>
     <button class="chip" onclick="setPipeF('active-client',this)">WIP</button>
     <button class="chip" onclick="setPipeF('closed-won',this)">Clients</button>
+    <button class="chip" onclick="setPipeF('closed',this)">✓ Closed</button>
     <button class="chip" onclick="setPipeF('complete',this)">Complete</button>
     <button class="chip" onclick="setPipeF('closed-lost',this)">Lost</button>
   </div>
@@ -322,26 +323,20 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
   <div id="admin-notes" style="display:none">
     <div class="section-label">How-To Notes</div>
     <div class="cards">
-
       <div class="card" style="cursor:default"><div class="card-body">
         <div class="card-name" style="margin-bottom:6px">📤 Export Data (local → file)</div>
-        <div class="card-sub" style="line-height:1.7;margin-bottom:10px">Run this in the browser console on your local file to download all data as a JSON file.</div>
-        <div style="background:var(--off-white);border-radius:8px;padding:10px;font-family:monospace;font-size:11px;line-height:1.7;color:#444;word-break:break-all">const keys=['twr-s3','twr-sup3','twr-pro3','twr-mkr3','twr-loc3','twr-bugs'];<br>const data={};<br>keys.forEach(k=>{const v=localStorage.getItem(k);if(v)data[k]=v;});<br>const a=document.createElement('a');<br>a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(data));<br>a.download='twr-data.json';document.body.appendChild(a);a.click();<br>document.body.removeChild(a);</div>
-        <button onclick="exportAllData()" style="margin-top:10px;width:100%;background:var(--ink);color:var(--off-white);border:none;border-radius:10px;padding:11px;font-family:system-ui,sans-serif;font-size:13px;font-weight:500;cursor:pointer">⬇ Download Data Now</button>
+        <div class="card-sub" style="line-height:1.7;margin-bottom:10px">Downloads all your data as a JSON file. Run on your local file or use the button below on the live site.</div>
+        <button onclick="exportAllData()" style="width:100%;background:var(--ink);color:var(--off-white);border:none;border-radius:10px;padding:11px;font-family:system-ui,sans-serif;font-size:13px;font-weight:500;cursor:pointer">⬇ Download Data Now</button>
       </div></div>
-
       <div class="card" style="cursor:default"><div class="card-body">
         <div class="card-name" style="margin-bottom:6px">📥 Import Data (file → live site)</div>
-        <div class="card-sub" style="line-height:1.7;margin-bottom:10px">Run this in the browser console on the live site, then select your twr-data.json file.</div>
-        <div style="background:var(--off-white);border-radius:8px;padding:10px;font-family:monospace;font-size:11px;line-height:1.7;color:#444;word-break:break-all">const input=document.createElement('input');<br>input.type='file';input.accept='.json';<br>input.onchange=e=>{const file=e.target.files[0];<br>const reader=new FileReader();<br>reader.onload=function(r){const data=JSON.parse(r.target.result);<br>Object.entries(data).forEach(([k,v])=>localStorage.setItem(k,v));<br>location.reload();};<br>reader.readAsText(file);};<br>document.body.appendChild(input);input.click();</div>
-        <button onclick="importAllData()" style="margin-top:10px;width:100%;background:var(--forge);color:white;border:none;border-radius:10px;padding:11px;font-family:system-ui,sans-serif;font-size:13px;font-weight:500;cursor:pointer">⬆ Import Data Now</button>
+        <div class="card-sub" style="line-height:1.7;margin-bottom:10px">Select your twr-data.json to load it into this browser. Use after updating the live site from GitHub.</div>
+        <button onclick="importAllData()" style="width:100%;background:var(--forge);color:white;border:none;border-radius:10px;padding:11px;font-family:system-ui,sans-serif;font-size:13px;font-weight:500;cursor:pointer">⬆ Import Data Now</button>
       </div></div>
-
       <div class="card" style="cursor:default"><div class="card-body">
         <div class="card-name" style="margin-bottom:6px">🔄 Updating the Live Site</div>
-        <div class="card-sub" style="line-height:1.7">1. Edit the HTML file locally.<br>2. Go to github.com/ThePrivFew/twr-material-library<br>3. Add file → Upload files → drop index.html in.<br>4. Commit changes.<br>5. Wait 60 seconds, hard refresh (Cmd+Shift+R).<br>6. Run Import Data to restore your local data.</div>
+        <div class="card-sub" style="line-height:1.8">1. Edit the HTML file locally.<br>2. Go to github.com/ThePrivFew/twr-material-library<br>3. Add file → Upload files → drop index.html in.<br>4. Commit changes.<br>5. Wait 60 seconds, hard refresh (Cmd+Shift+R).<br>6. Use Import Data above to restore your local data.</div>
       </div></div>
-
     </div>
   </div>
 </div>
@@ -1993,6 +1988,7 @@ function RP(){
   // Filter clients
   var fl;
   if(PF==='all')fl=activeClients;
+  else if(PF==='closed')fl=clients.filter(c=>{var s=clientActiveStatus(c);return s==='complete'||s==='closed-lost';});
   else if(PF==='closed-lost')fl=clients.filter(c=>clientActiveStatus(c)==='closed-lost');
   else if(PF==='complete')fl=clients.filter(c=>clientActiveStatus(c)==='complete');
   else if(PF==='prospect')fl=activeClients.filter(c=>c.projects&&c.projects.some(p=>p.status==='prospect'));
@@ -3558,7 +3554,6 @@ function exportAllData(){
   document.body.appendChild(a);a.click();document.body.removeChild(a);
   showToast('Downloaded twr-data.json');
 }
-
 function importAllData(){
   var input=document.createElement('input');
   input.type='file';input.accept='.json';
