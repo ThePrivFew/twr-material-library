@@ -445,7 +445,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
   <input type="file" id="ms-ph-in" accept="image/*" multiple style="display:none" onchange="HPTagged('ms',event)">
   <div id="ms-ph-prev"></div>
   <input type="hidden" id="ms-id">
-  <button class="modal-save" onclick="saveStock()">Save to Library</button>
+  <button class="modal-save" onclick="saveStock()" ontouchend="event.preventDefault();saveStock()">Save to Library</button>
   <button class="modal-cancel" onclick="CM('m-stock')">Cancel</button>
 </div></div>
 
@@ -877,8 +877,8 @@ function handleAdd(){
     else{resetM('m-supplier');OM('m-supplier');}
   }
 }
-function OM(id){document.getElementById(id).classList.add('open');document.body.style.overflow='hidden';document.body.style.position='fixed';document.body.style.width='100%';}
-function CM(id){document.getElementById(id).classList.remove('open');document.body.style.overflow='';document.body.style.position='';document.body.style.width='';}
+function OM(id){document.getElementById(id).classList.add('open');}
+function CM(id){document.getElementById(id).classList.remove('open');}
 function resetM(id){
   if(id==='m-stock'){['ms-addr','ms-era','ms-origin','ms-dim','ms-vol','ms-date','ms-proj','ms-client','ms-subs','ms-notes','ms-id','ms-year-built','ms-original-owner','ms-orig-materials','ms-prop-history','ms-sources'].forEach(i=>{const el=document.getElementById(i);if(el)el.value=''});var hs=document.getElementById('ms-heritage');if(hs)hs.value='';var aa=document.getElementById('ms-addr-actions');if(aa)aa.style.display='none';PP.ms=[];renderTaggedPP('ms');}
   if(id==='m-supplier'){['sup-name','sup-contact','sup-phone','sup-email','sup-loc','sup-url','sup-stock','sup-notes','sup-id'].forEach(i=>{const el=document.getElementById(i);if(el)el.value=''});}
@@ -993,16 +993,45 @@ function editS(id){
   OM('m-stock');
 }
 function saveStock(){
-  const id=document.getElementById('ms-id').value||'s'+Date.now().toString(36);
-  const e={id,type:document.getElementById('ms-type').value,status:document.getElementById('ms-status').value,addr:document.getElementById('ms-addr').value.trim(),struct:document.getElementById('ms-struct').value,era:document.getElementById('ms-era').value.trim(),origin:document.getElementById('ms-origin').value.trim(),yearBuilt:document.getElementById('ms-year-built').value.trim(),heritage:document.getElementById('ms-heritage').value,originalOwner:document.getElementById('ms-original-owner').value.trim(),origMaterials:document.getElementById('ms-orig-materials').value.trim(),propHistory:document.getElementById('ms-prop-history').value.trim(),sources:document.getElementById('ms-sources').value.trim(),species:document.getElementById('ms-species').value,cond:document.getElementById('ms-cond').value,dim:document.getElementById('ms-dim').value.trim(),vol:parseFloat(document.getElementById('ms-vol').value)||0,date:document.getElementById('ms-date').value,location:document.getElementById('ms-location').value,locationNotes:document.getElementById('ms-location-notes').value.trim(),proj:document.getElementById('ms-proj').value.trim(),client:document.getElementById('ms-client').value.trim(),subs:document.getElementById('ms-subs').value.trim(),notes:document.getElementById('ms-notes').value.trim(),photos:PP.ms||[],created:new Date().toISOString().split('T')[0]};
-  if(!e.addr&&!confirm('No source address entered. Save anyway?')){return;}
-  try {
+  function gv(id){var el=document.getElementById(id);return el?el.value.trim():''}
+  function gvr(id){var el=document.getElementById(id);return el?el.value:''}
+  try{
+    const id=gv('ms-id')||'s'+Date.now().toString(36);
+    const e={
+      id,
+      type:gvr('ms-type')||'pool',
+      status:gvr('ms-status')||'available',
+      addr:gv('ms-addr'),
+      struct:gvr('ms-struct')||'Residential house',
+      era:gv('ms-era'),
+      origin:gv('ms-origin'),
+      yearBuilt:gv('ms-year-built'),
+      heritage:gvr('ms-heritage')||'',
+      originalOwner:gv('ms-original-owner'),
+      origMaterials:gv('ms-orig-materials'),
+      propHistory:gv('ms-prop-history'),
+      sources:gv('ms-sources'),
+      species:gvr('ms-species')||'Unknown',
+      cond:gvr('ms-cond')||'Good',
+      dim:gv('ms-dim'),
+      vol:parseFloat(gvr('ms-vol'))||0,
+      date:gvr('ms-date'),
+      location:gvr('ms-location')||'',
+      locationNotes:gv('ms-location-notes'),
+      proj:gv('ms-proj'),
+      client:gv('ms-client'),
+      subs:gv('ms-subs'),
+      notes:gv('ms-notes'),
+      photos:PP.ms||[],
+      created:new Date().toISOString().split('T')[0]
+    };
     const data=LD('stock'),idx=data.findIndex(d=>d.id===id);
     if(idx>=0)data[idx]=e;else data.push(e);
-    SV('stock',data);CM('m-stock');RS();showToast(idx>=0?'Updated ✓':'Saved ✓');
-  } catch(err) {
-    showToast('Save failed: '+err.message);
-    console.error('saveStock error:',err);
+    SV('stock',data);CM('m-stock');RS();
+    showToast(idx>=0?'Updated ✓':'Saved ✓');
+  }catch(err){
+    showToast('Error: '+err.message.substring(0,40));
+    console.error('saveStock:',err);
   }
 }
 function delS(id){if(!confirm('Remove?'))return;SV('stock',LD('stock').filter(e=>e.id!==id));SV2('stock');RS();showToast('Removed')}
