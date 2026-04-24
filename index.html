@@ -441,7 +441,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
   <div class="field"><label>Notes</label><textarea id="ms-notes" placeholder="Context, remaining pieces, story..."></textarea></div>
   <div class="modal-section">In-Situ Photos</div>
   <div style="font-size:11px;color:#aaa;margin-bottom:10px;line-height:1.6">Each photo is tagged: where in the building it was, where it's stored, and what it will become.</div>
-  <div class="photo-upload" onclick="document.getElementById('ms-ph-in').click()"><div style="font-size:24px;margin-bottom:4px">📷</div><div style="font-size:13px;color:#aaa">Tap to add photos</div></div>
+  <div class="photo-upload" onclick="document.getElementById('ms-ph-in').click()" ontouchend="event.preventDefault();document.getElementById('ms-ph-in').click()"><div style="font-size:24px;margin-bottom:4px">📷</div><div style="font-size:13px;color:#aaa">Tap to add photos</div></div>
   <input type="file" id="ms-ph-in" accept="image/*" multiple style="display:none" onchange="HPTagged('ms',event)">
   <div id="ms-ph-prev"></div>
   <input type="hidden" id="ms-id">
@@ -593,7 +593,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
       <option value="large">Large (100%)</option>
     </select>
   </div>
-  <div class="photo-upload" onclick="document.getElementById('prj-ph-in').click()"><div style="font-size:24px;margin-bottom:4px">📷</div><div style="font-size:13px;color:#aaa">Tap to add photos (max 3)</div></div>
+  <div class="photo-upload" onclick="document.getElementById('prj-ph-in').click()" ontouchend="event.preventDefault();document.getElementById('prj-ph-in').click()"><div style="font-size:24px;margin-bottom:4px">📷</div><div style="font-size:13px;color:#aaa">Tap to add photos (max 3)</div></div>
   <input type="file" id="prj-ph-in" accept="image/*" multiple style="display:none" onchange="HPP(event)">
   <div class="photo-preview" id="prj-ph-prev"></div>
   <input type="hidden" id="prj-client-id">
@@ -3689,14 +3689,16 @@ Return this exact JSON structure:
 // ── TAGGED PHOTO UPLOAD ───────────────────────────────────────────────────────
 function HPTagged(prefix, event){
   if(!PP[prefix]) PP[prefix] = [];
-  Array.from(event.target.files).forEach(function(file){
+  var files = Array.from(event.target.files);
+  if(!files.length){showToast('No photo selected');return;}
+  files.forEach(function(file){
     var r = new FileReader();
     r.onload = function(e){
-      // Save photo immediately — user tags it after via Edit tag button
       PP[prefix].push({src:e.target.result, location:'', storage:'', futureUse:''});
       renderTaggedPP(prefix);
-      showToast('Photo added — tap Edit tag to label it');
+      showToast('Photo added (' + PP[prefix].length + ') — save when ready');
     };
+    r.onerror = function(){showToast('Could not read photo');};
     r.readAsDataURL(file);
   });
 }
