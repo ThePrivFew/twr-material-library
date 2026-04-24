@@ -3683,8 +3683,8 @@ function renderTaggedPP(prefix){
       + (!meta.location&&!meta.storage&&!meta.futureUse?'<div style="font-size:10px;color:#aaa">No tags added</div>':'')
       + '</div>'
       + '<div style="display:flex;flex-direction:column;gap:4px">'
-      + '<button onclick="editPhotoTag(''+prefix+'','+i+')" style="background:var(--off-white);border:1px solid var(--rule);border-radius:6px;padding:4px 8px;font-size:10px;cursor:pointer;color:var(--forge);white-space:nowrap">Edit tag</button>'
-      + '<button onclick="rmPh(''+prefix+'','+i+')" style="background:none;border:none;font-size:13px;cursor:pointer;color:#ccc">✕</button>'
+      + '<button data-prefix="'+prefix+'" data-idx="'+i+'" onclick="editPhotoTagBtn(this)" style="background:var(--off-white);border:1px solid var(--rule);border-radius:6px;padding:4px 8px;font-size:10px;cursor:pointer;color:var(--forge);white-space:nowrap">Edit tag</button>'
+      + '<button data-prefix="'+prefix+'" data-idx="'+i+'" onclick="rmPhTagBtn(this)" style="background:none;border:none;font-size:13px;cursor:pointer;color:#ccc">&times;</button>'
       + '</div></div>';
   }).join('');
 }
@@ -3697,10 +3697,10 @@ function showPhotoTagModal(src, callback){
 
   inn.innerHTML = '<div style="width:36px;height:4px;background:var(--sand);border-radius:2px;margin:0 auto 16px"></div>'
     + '<div style="font-family:Cormorant Garamond,Georgia,serif;font-size:18px;margin-bottom:4px">Tag this photo</div>'
-    + '<div style="font-size:11px;color:#aaa;margin-bottom:16px">Where is it · where it's going · what it becomes</div>'
+    + '<div style="font-size:11px;color:#aaa;margin-bottom:16px">Where is it · where it&rsquo;s going · what it becomes</div>'
     + '<img src="'+src+'" style="width:100%;max-height:180px;object-fit:cover;border-radius:10px;margin-bottom:16px">'
     + '<div style="margin-bottom:12px"><label style="display:block;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#999;margin-bottom:6px">📍 Location in building</label>'
-    + '<select id="tag-location-sel" onchange="document.getElementById('tag-location-other').style.display=this.value==='Other'?'block':'none'" style="width:100%;background:var(--off-white);border:1.5px solid var(--rule);border-radius:10px;padding:10px 13px;font-family:-apple-system,sans-serif;font-size:14px;color:var(--ink);outline:none;-webkit-appearance:none;margin-bottom:6px">'
+    + '<select id="tag-location-sel" onchange="toggleOtherLoc(this)" style="width:100%;background:var(--off-white);border:1.5px solid var(--rule);border-radius:10px;padding:10px 13px;font-family:-apple-system,sans-serif;font-size:14px;color:var(--ink);outline:none;-webkit-appearance:none;margin-bottom:6px">'
     + '<option value="">Select location...</option>'
     + '<option>Living room</option><option>Kitchen</option><option>Dining room</option><option>Bedroom</option><option>Hallway / Corridor</option><option>Bathroom</option><option>Laundry</option><option>Study / Office</option><option>Verandah / Deck</option><option>Garage / Shed</option><option>Roof / Rafters</option><option>Floor joists</option><option>Structural frame</option><option>External wall cladding</option><option>Internal wall lining</option><option>Staircase</option><option>Ceiling</option><option>Other</option>'
     + '</select>'
@@ -3756,6 +3756,29 @@ function editPhotoTag(prefix, idx){
   }, 100);
 }
 
+
+function toggleOtherLoc(sel){var lo=document.getElementById("tag-location-other");if(lo)lo.style.display=sel.value==="Other"?"block":"none";}
+
+function editPhotoTagBtn(el){
+  var prefix=el.getAttribute('data-prefix'), idx=parseInt(el.getAttribute('data-idx'));
+  var photo=PP[prefix][idx], src=getPhotoSrc(photo);
+  var meta=typeof photo==='object'?photo:{src:photo,location:'',storage:'',futureUse:''};
+  showPhotoTagModal(src,function(updated){PP[prefix][idx]=updated;renderTaggedPP(prefix);});
+  setTimeout(function(){
+    var ls=document.getElementById('tag-location-sel'),lo=document.getElementById('tag-location-other');
+    if(ls&&meta.location){
+      var found=Array.from(ls.options).some(function(o){return o.value===meta.location;});
+      if(found){ls.value=meta.location;}else{ls.value='Other';if(lo){lo.style.display='block';lo.value=meta.location;}}
+    }
+    var st=document.getElementById('tag-storage');if(st)st.value=meta.storage||'';
+    var fu=document.getElementById('tag-future');if(fu)fu.value=meta.futureUse||'';
+  },100);
+}
+
+function rmPhTagBtn(el){
+  var prefix=el.getAttribute('data-prefix'),idx=parseInt(el.getAttribute('data-idx'));
+  PP[prefix].splice(idx,1);renderTaggedPP(prefix);
+}
 // Override HP for stock photos to use tagged version
 // (HPTagged is used directly in the onchange handler)
 
