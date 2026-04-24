@@ -3632,57 +3632,38 @@ async function researchProperty(){
   if(!addr){showToast('Enter an address first');return;}
   var btn = document.getElementById('ms-research-btn');
   var status = document.getElementById('ms-research-status');
-  btn.textContent = '✦ Researching...';
+  btn.textContent = '\u2726 Researching...';
   btn.disabled = true;
   status.style.display = 'block';
-  status.textContent = '✦ Researching property history — this may take 20–30 seconds...';
+  status.textContent = '\u2726 Researching property history \u2014 this may take 20\u201330 seconds...';
   try {
-    var res = await fetch('https://api.anthropic.com/v1/messages', {
+    var res = await fetch('https://twr-pipeline-proxy.thewattleroad.workers.dev/research', {
       method: 'POST',
       headers: {'Content-Type':'application/json'},
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-5',
-        max_tokens: 1000,
-        tools: [{type:'web_search_20250305',name:'web_search'}],
-        messages: [{role:'user', content: `Research this Australian property address and return ONLY valid JSON (no markdown, no preamble):
-
-Address: ${addr}
-
-Search for: year built, original owner or builder, construction materials, heritage listing status, any notable history, previous occupants, local historical context, council records, Trove newspaper archives, NSW Heritage Register if applicable.
-
-Return this exact JSON structure:
-{
-  "yearBuilt": "e.g. 1928 or c. 1920s",
-  "heritage": "listed | contributory | none | unknown",
-  "originalOwner": "name if found, otherwise empty string",
-  "origMaterials": "e.g. hardwood frame, fibrous cement, red brick",
-  "propHistory": "2-3 sentences on history, previous owners, notable events",
-  "sources": "comma-separated list of sources checked",
-  "originStory": "1-2 sentences suitable for timber provenance record"
-}`}]
-      })
+      body: JSON.stringify({address: addr})
     });
-    var data = await res.json();
-    // Extract text from response (may include tool use blocks)
-    var text = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').replace(/\`\`\`json|\`\`\`/g,'').trim();
-    var parsed = JSON.parse(text);
-    if(parsed.yearBuilt) document.getElementById('ms-year-built').value = parsed.yearBuilt;
-    if(parsed.heritage) document.getElementById('ms-heritage').value = parsed.heritage;
-    if(parsed.originalOwner) document.getElementById('ms-original-owner').value = parsed.originalOwner;
-    if(parsed.origMaterials) document.getElementById('ms-orig-materials').value = parsed.origMaterials;
-    if(parsed.propHistory) document.getElementById('ms-prop-history').value = parsed.propHistory;
-    if(parsed.sources) document.getElementById('ms-sources').value = parsed.sources;
-    if(parsed.originStory && !document.getElementById('ms-origin').value) document.getElementById('ms-origin').value = parsed.originStory;
-    status.textContent = '✦ Research complete — review and edit fields above';
+    if(!res.ok) throw new Error('Worker error ' + res.status);
+    var parsed = await res.json();
+    if(parsed.error) throw new Error(parsed.error);
+    function sf(id, val){ var el=document.getElementById(id); if(el&&val&&val!=='unknown'&&val!=='') el.value=val; }
+    sf('ms-year-built', parsed.yearBuilt);
+    sf('ms-original-owner', parsed.originalOwner);
+    sf('ms-orig-materials', parsed.origMaterials);
+    sf('ms-prop-history', parsed.propHistory);
+    sf('ms-sources', parsed.sources);
+    var hs=document.getElementById('ms-heritage'); if(hs&&parsed.heritage) hs.value=parsed.heritage;
+    var os=document.getElementById('ms-origin'); if(os&&parsed.originStory&&!os.value) os.value=parsed.originStory;
+    status.textContent = '\u2726 Research complete \u2014 review and edit fields above';
     status.style.background = 'rgba(122,175,138,0.12)';
     status.style.color = '#7ab88a';
-    showToast('Property research complete ✓');
+    showToast('Research complete \u2713');
   } catch(err) {
-    status.textContent = '✦ Could not complete research — fill in manually';
+    status.textContent = '\u2726 Research returned no data \u2014 fill in manually';
     status.style.background = 'rgba(196,83,10,0.08)';
-    showToast('Research failed — check connection');
+    status.style.color = 'var(--forge)';
+    showToast('Research: ' + err.message.substring(0,40));
   }
-  btn.textContent = '✦ Research Property';
+  btn.textContent = '\u2726 Research Property';
   btn.disabled = false;
 }
 
