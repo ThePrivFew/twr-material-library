@@ -384,12 +384,33 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
     <div class="field"><label>Status</label><select id="ms-status"><option value="available">Available</option><option value="reserved">Reserved</option><option value="in-use">In Use</option><option value="complete">Complete</option></select></div>
   </div>
   <div class="modal-section">Origin</div>
-  <div class="field"><label>Source Address</label><input id="ms-addr" type="text" placeholder="47 River Street, Port Macquarie NSW 2444"></div>
+  <div class="field">
+    <label>Source Address</label>
+    <div style="display:flex;gap:8px;align-items:flex-end">
+      <input id="ms-addr" type="text" placeholder="47 River Street, Port Macquarie NSW 2444" style="flex:1;background:var(--off-white);border:1.5px solid var(--rule);border-radius:10px;padding:10px 13px;font-family:-apple-system,sans-serif;font-size:14px;color:var(--ink);outline:none" oninput="document.getElementById('ms-addr-actions').style.display=this.value.trim()?'flex':'none'">
+    </div>
+    <div id="ms-addr-actions" style="display:none;gap:8px;margin-top:8px">
+      <button type="button" onclick="openMapsFromAddr()" style="flex:1;background:var(--off-white);border:1.5px solid var(--rule);border-radius:10px;padding:9px;font-family:-apple-system,sans-serif;font-size:12px;font-weight:500;color:var(--forge);cursor:pointer">📍 Open in Maps</button>
+      <button type="button" onclick="researchProperty()" id="ms-research-btn" style="flex:2;background:var(--forge);color:white;border:none;border-radius:10px;padding:9px;font-family:-apple-system,sans-serif;font-size:12px;font-weight:500;cursor:pointer">✦ Research Property</button>
+    </div>
+  </div>
   <div class="field-row">
     <div class="field"><label>Structure</label><select id="ms-struct"><option>Residential house</option><option>Art deco home</option><option>Farmhouse</option><option>Barn / shed</option><option>Commercial building</option><option>Bridge / wharf</option><option>Other</option></select></div>
     <div class="field"><label>Est. Era</label><input id="ms-era" type="text" placeholder="c. 1928"></div>
   </div>
   <div class="field"><label>Origin Story</label><textarea id="ms-origin" placeholder="e.g. Timber is late 1800s old-growth despite 1960s build..."></textarea></div>
+
+  <div class="modal-section">Property History</div>
+  <div id="ms-research-status" style="display:none;background:var(--forge-pale);border-radius:10px;padding:10px 13px;margin-bottom:12px;font-size:12px;color:var(--forge);font-family:-apple-system,sans-serif">✦ Researching property history...</div>
+  <div class="field-row">
+    <div class="field"><label>Year Built</label><input id="ms-year-built" type="text" placeholder="e.g. 1928"></div>
+    <div class="field"><label>Heritage Status</label><select id="ms-heritage"><option value="">Unknown</option><option value="listed">Heritage Listed</option><option value="contributory">Contributory</option><option value="none">Not listed</option></select></div>
+  </div>
+  <div class="field"><label>Original Owner / Builder</label><input id="ms-original-owner" type="text" placeholder="e.g. Thomas J. Reid, builder"></div>
+  <div class="field"><label>Construction Materials (original)</label><input id="ms-orig-materials" type="text" placeholder="e.g. Ironbark hardwood frame, cedar joinery, red brick"></div>
+  <div class="field"><label>Property History</label><textarea id="ms-prop-history" placeholder="Previous owners, modifications, significant events, local context..." style="min-height:80px"></textarea></div>
+  <div class="field"><label>Sources</label><input id="ms-sources" type="text" placeholder="e.g. NSW Heritage Register, Trove, local council records"></div>
+
   <div class="modal-section">Material</div>
   <div class="field-row">
     <div class="field"><label>Species</label><select id="ms-species"><option>Spotted Gum</option><option>Blackbutt</option><option>Ironbark</option><option>Tallowwood</option><option>Brush Box</option><option>Sydney Blue Gum</option><option>Flooded Gum</option><option>Red Mahogany</option><option>Rosewood</option><option>Likely Spotted Gum</option><option>Likely Blackbutt</option><option>Mixed Hardwood</option><option>Unknown</option></select></div>
@@ -418,10 +439,11 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
   <div class="field"><label>Client</label><input id="ms-client" type="text" placeholder="Name or company"></div>
   <div class="field"><label>Sub-projects / Pieces Made</label><textarea id="ms-subs" placeholder="e.g. Dining table (complete) · 2 lengths remain for bench"></textarea></div>
   <div class="field"><label>Notes</label><textarea id="ms-notes" placeholder="Context, remaining pieces, story..."></textarea></div>
-  <div class="modal-section">Photos</div>
+  <div class="modal-section">In-Situ Photos</div>
+  <div style="font-size:11px;color:#aaa;margin-bottom:10px;line-height:1.6">Each photo is tagged: where in the building it was, where it's stored, and what it will become.</div>
   <div class="photo-upload" onclick="document.getElementById('ms-ph-in').click()"><div style="font-size:24px;margin-bottom:4px">📷</div><div style="font-size:13px;color:#aaa">Tap to add photos</div></div>
-  <input type="file" id="ms-ph-in" accept="image/*" multiple style="display:none" onchange="HP('ms',event)">
-  <div class="photo-preview" id="ms-ph-prev"></div>
+  <input type="file" id="ms-ph-in" accept="image/*" multiple style="display:none" onchange="HPTagged('ms',event)">
+  <div id="ms-ph-prev"></div>
   <input type="hidden" id="ms-id">
   <button class="modal-save" onclick="saveStock()">Save to Library</button>
   <button class="modal-cancel" onclick="CM('m-stock')">Cancel</button>
@@ -858,7 +880,7 @@ function handleAdd(){
 function OM(id){document.getElementById(id).classList.add('open')}
 function CM(id){document.getElementById(id).classList.remove('open')}
 function resetM(id){
-  if(id==='m-stock'){['ms-addr','ms-era','ms-origin','ms-dim','ms-vol','ms-date','ms-proj','ms-client','ms-subs','ms-notes','ms-id'].forEach(i=>{const el=document.getElementById(i);if(el)el.value=''});PP.ms=[];renderPP('ms');}
+  if(id==='m-stock'){['ms-addr','ms-era','ms-origin','ms-dim','ms-vol','ms-date','ms-proj','ms-client','ms-subs','ms-notes','ms-id','ms-year-built','ms-original-owner','ms-orig-materials','ms-prop-history','ms-sources'].forEach(i=>{const el=document.getElementById(i);if(el)el.value=''});var hs=document.getElementById('ms-heritage');if(hs)hs.value='';var aa=document.getElementById('ms-addr-actions');if(aa)aa.style.display='none';PP.ms=[];renderTaggedPP('ms');}
   if(id==='m-supplier'){['sup-name','sup-contact','sup-phone','sup-email','sup-loc','sup-url','sup-stock','sup-notes','sup-id'].forEach(i=>{const el=document.getElementById(i);if(el)el.value=''});}
   if(id==='m-maker'){['mkr-url','mkr-name','mkr-loc','mkr-email','mkr-phone','mkr-about','mkr-materials','mkr-engage','mkr-notes','mkr-id'].forEach(i=>{const el=document.getElementById(i);if(el)el.value=''});document.getElementById('mkr-ai-note').style.display='none';}
   if(id==='m-prospect'){['pro-name','pro-email','pro-phone','pro-need','pro-mat','pro-val','pro-next','pro-id'].forEach(i=>{const el=document.getElementById(i);if(el){el.value='';el.disabled=false;}});var fEl=document.getElementById('pro-free');if(fEl)fEl.checked=false;PSS('prospect',document.getElementById('pst-prospect'));}
@@ -889,7 +911,7 @@ function RS(){
   list.innerHTML=h;
 }
 function SC(d,SL){return`<div class="cards"><div class="card" onclick="showSD('${d.id}')">
-  ${d.photos&&d.photos[0]?`<img class="card-img" src="${d.photos[0]}">`:`<div class="card-img-ph">${d.type==='project'?'📖':'🪵'}</div>`}
+  ${d.photos&&d.photos[0]?`<img class="card-img" src="${getPhotoSrc(d.photos[0])}">`:`<div class="card-img-ph">${d.type==='project'?'📖':'🪵'}</div>`}
   <div class="card-body">
     <div class="card-top"><div class="card-name">${d.species} · ${d.era}</div><span class="badge ${d.status}">${SL[d.status]}</span></div>
     <div class="card-sub">📍 ${d.addr}</div>
@@ -910,16 +932,27 @@ function showSD(id){
   document.getElementById('d-back').onclick=()=>{SV2('stock');RS()};
   document.getElementById('d-edit').onclick=()=>editS(id);
   document.getElementById('d-inner').innerHTML=`
-    ${d.photos&&d.photos[0]?`<img style="width:100%;height:200px;object-fit:cover;display:block" src="${d.photos[0]}">`:`<div style="width:100%;height:160px;background:linear-gradient(135deg,var(--off-white),var(--rule));display:flex;align-items:center;justify-content:center;font-size:56px">${d.type==='project'?'📖':'🪵'}</div>`}
+    ${d.photos&&d.photos[0]?`<img style="width:100%;height:200px;object-fit:cover;display:block" src="${getPhotoSrc(d.photos[0])}">`:`<div style="width:100%;height:160px;background:linear-gradient(135deg,var(--off-white),var(--rule));display:flex;align-items:center;justify-content:center;font-size:56px">${d.type==='project'?'📖':'🪵'}</div>`}
     <div class="detail-body">
       <div class="detail-section"><div class="detail-section-title">Origin</div>
         <div class="detail-grid">
-          <div class="detail-field"><div class="detail-field-label">Address</div><div class="detail-field-value" style="font-size:12px">${d.addr}</div></div>
+          <div class="detail-field" style="grid-column:span 2"><div class="detail-field-label">Address</div><div class="detail-field-value" style="font-size:12px">${d.addr}${d.addr?`<a href="https://maps.apple.com/?q=${encodeURIComponent(d.addr)}" target="_blank" style="display:inline-block;margin-left:8px;font-size:10px;color:var(--forge);text-decoration:none">📍 Maps</a>`:''}</div></div>
           <div class="detail-field"><div class="detail-field-label">Structure</div><div class="detail-field-value">${d.struct}</div></div>
           <div class="detail-field"><div class="detail-field-label">Era</div><div class="detail-field-value">${d.era}</div></div>
           <div class="detail-field"><div class="detail-field-label">Salvaged</div><div class="detail-field-value">${FD(d.date)}</div></div>
         </div>
         ${d.origin?`<div class="detail-notes" style="margin-top:8px;font-style:italic">"${d.origin}"</div>`:''}
+        ${(d.yearBuilt||d.originalOwner||d.propHistory||d.origMaterials)?`
+        <div class="detail-section-title" style="margin-top:14px">Property History</div>
+        <div class="detail-grid">
+          ${d.yearBuilt?`<div class="detail-field"><div class="detail-field-label">Year Built</div><div class="detail-field-value">${d.yearBuilt}</div></div>`:''}
+          ${d.heritage&&d.heritage!==''?`<div class="detail-field"><div class="detail-field-label">Heritage</div><div class="detail-field-value">${{listed:'Heritage Listed',contributory:'Contributory',none:'Not listed'}[d.heritage]||d.heritage}</div></div>`:''}
+          ${d.originalOwner?`<div class="detail-field" style="grid-column:span 2"><div class="detail-field-label">Original Owner / Builder</div><div class="detail-field-value">${d.originalOwner}</div></div>`:''}
+          ${d.origMaterials?`<div class="detail-field" style="grid-column:span 2"><div class="detail-field-label">Construction Materials</div><div class="detail-field-value">${d.origMaterials}</div></div>`:''}
+        </div>
+        ${d.propHistory?`<div class="detail-notes" style="margin-top:8px">${d.propHistory}</div>`:''}
+        ${d.sources?`<div style="font-size:10px;color:#aaa;margin-top:6px;font-family:-apple-system,sans-serif">Sources: ${d.sources}</div>`:''}
+        `:''}
       </div>
       <div class="detail-section"><div class="detail-section-title">Material</div>
         <div class="detail-grid">
@@ -933,6 +966,9 @@ function showSD(id){
       </div>
       ${d.proj?`<div class="detail-section"><div class="detail-section-title">Commission</div><div class="detail-notes"><strong>${d.proj}</strong>${d.client?`<br>👤 ${d.client}`:''}${d.subs?`<br><br>${d.subs}`:''}</div></div>`:''}
       ${d.notes?`<div class="detail-section"><div class="detail-section-title">Notes</div><div class="detail-notes">${d.notes}</div></div>`:''}
+      ${d.photos&&d.photos.length?`<div class="detail-section"><div class="detail-section-title">In-Situ Photos (${d.photos.length})</div>
+        <div style="display:flex;flex-direction:column;gap:10px">${d.photos.map(p=>{const src=getPhotoSrc(p);const meta=typeof p==='object'?p:{};return`<div style="border-radius:10px;overflow:hidden;border:1px solid var(--rule)"><img src="${src}" style="width:100%;max-height:220px;object-fit:cover;display:block"><div style="padding:10px 12px;background:white">${meta.location?`<div style="font-size:11px;font-weight:500;color:var(--ink);margin-bottom:3px">📍 ${meta.location}</div>`:''} ${meta.storage?`<div style="font-size:10px;color:#888;margin-bottom:3px">📦 Stored: ${meta.storage}</div>`:''} ${meta.futureUse?`<div style="font-size:10px;color:var(--forge)">→ ${meta.futureUse}</div>`:''}</div></div>`;}).join('')}</div>
+      </div>`:''}
       <div class="detail-section"><div class="detail-section-title">FCD Provenance Chain</div>
         <div id="prov-chain-${id}">${renderProvChain(d)}</div>
         <button onclick="addProvStep('${id}')" style="width:100%;margin-top:8px;background:var(--off-white);border:1.5px dashed var(--rule);border-radius:10px;padding:10px;font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;font-size:13px;color:var(--forge);cursor:pointer">+ Add Step</button>
@@ -950,6 +986,7 @@ function editS(id){
   document.getElementById('ms-title').textContent='Edit Stock';
   document.getElementById('ms-id').value=d.id;document.getElementById('ms-type').value=d.type;document.getElementById('ms-status').value=d.status;
   document.getElementById('ms-addr').value=d.addr||'';document.getElementById('ms-struct').value=d.struct||'Residential house';document.getElementById('ms-era').value=d.era||'';document.getElementById('ms-origin').value=d.origin||'';
+  document.getElementById('ms-year-built').value=d.yearBuilt||'';document.getElementById('ms-original-owner').value=d.originalOwner||'';document.getElementById('ms-orig-materials').value=d.origMaterials||'';document.getElementById('ms-prop-history').value=d.propHistory||'';document.getElementById('ms-sources').value=d.sources||'';var hs=document.getElementById('ms-heritage');if(hs)hs.value=d.heritage||'';var aa=document.getElementById('ms-addr-actions');if(aa)aa.style.display=d.addr?'flex':'none';
   document.getElementById('ms-species').value=d.species||'Spotted Gum';document.getElementById('ms-cond').value=d.cond||'Good';document.getElementById('ms-dim').value=d.dim||'';document.getElementById('ms-vol').value=d.vol||'';document.getElementById('ms-date').value=d.date||'';
   document.getElementById('ms-location').value=d.location||'';document.getElementById('ms-location-notes').value=d.locationNotes||'';
   document.getElementById('ms-proj').value=d.proj||'';document.getElementById('ms-client').value=d.client||'';document.getElementById('ms-subs').value=d.subs||'';document.getElementById('ms-notes').value=d.notes||'';
@@ -957,7 +994,7 @@ function editS(id){
 }
 function saveStock(){
   const id=document.getElementById('ms-id').value||'s'+Date.now().toString(36);
-  const e={id,type:document.getElementById('ms-type').value,status:document.getElementById('ms-status').value,addr:document.getElementById('ms-addr').value.trim(),struct:document.getElementById('ms-struct').value,era:document.getElementById('ms-era').value.trim(),origin:document.getElementById('ms-origin').value.trim(),species:document.getElementById('ms-species').value,cond:document.getElementById('ms-cond').value,dim:document.getElementById('ms-dim').value.trim(),vol:parseFloat(document.getElementById('ms-vol').value)||0,date:document.getElementById('ms-date').value,location:document.getElementById('ms-location').value,locationNotes:document.getElementById('ms-location-notes').value.trim(),proj:document.getElementById('ms-proj').value.trim(),client:document.getElementById('ms-client').value.trim(),subs:document.getElementById('ms-subs').value.trim(),notes:document.getElementById('ms-notes').value.trim(),photos:PP.ms||[],created:new Date().toISOString().split('T')[0]};
+  const e={id,type:document.getElementById('ms-type').value,status:document.getElementById('ms-status').value,addr:document.getElementById('ms-addr').value.trim(),struct:document.getElementById('ms-struct').value,era:document.getElementById('ms-era').value.trim(),origin:document.getElementById('ms-origin').value.trim(),yearBuilt:document.getElementById('ms-year-built').value.trim(),heritage:document.getElementById('ms-heritage').value,originalOwner:document.getElementById('ms-original-owner').value.trim(),origMaterials:document.getElementById('ms-orig-materials').value.trim(),propHistory:document.getElementById('ms-prop-history').value.trim(),sources:document.getElementById('ms-sources').value.trim(),species:document.getElementById('ms-species').value,cond:document.getElementById('ms-cond').value,dim:document.getElementById('ms-dim').value.trim(),vol:parseFloat(document.getElementById('ms-vol').value)||0,date:document.getElementById('ms-date').value,location:document.getElementById('ms-location').value,locationNotes:document.getElementById('ms-location-notes').value.trim(),proj:document.getElementById('ms-proj').value.trim(),client:document.getElementById('ms-client').value.trim(),subs:document.getElementById('ms-subs').value.trim(),notes:document.getElementById('ms-notes').value.trim(),photos:PP.ms||[],created:new Date().toISOString().split('T')[0]};
   if(!e.addr){showToast('Please enter a source address');return;}
   const data=LD('stock'),idx=data.findIndex(d=>d.id===id);
   if(idx>=0)data[idx]=e;else data.push(e);
@@ -2157,6 +2194,7 @@ function showProjectD(clientId,projectId){
     +'<div class="detail-actions" style="margin-top:16px">'
     +'<button class="btn-full secondary" onclick="openEditProject(\''+clientId+'\',\''+projectId+'\')">✏️ Edit</button>'
     +'<button class="btn-full secondary" onclick="printSpecSheet(\''+clientId+'\',\''+projectId+'\')">🖨 Print Sheet</button>'
+    +(p.status!=='complete'&&p.status!=='closed-lost'?'<button class="btn-full" style="background:var(--sand);color:white" onclick="closeProject(\''+clientId+'\',\''+projectId+'\')">✓ Close Job</button>':'')
     +'</div>'
     +'<div id="stepper-'+p.id+'" style="margin-top:10px">'+buildProjectStepper(clientId,p)+'</div>'
     +'<div style="text-align:center;margin-top:12px"><button onclick="delProject(\''+clientId+'\',\''+projectId+'\')" style="background:none;border:none;font-size:12px;color:var(--red);cursor:pointer;font-family:system-ui,sans-serif">Remove Job</button></div>'
@@ -3541,6 +3579,228 @@ function goToBugs(){
   setTimeout(function(){ ta.focus(); }, 100);
 }
 
+// Keep old name as alias
+function libraryBugReport(){ goToBugs(); }
+
+// ── PHOTO HELPER — handles old (string) and new (object) photo formats ───────
+function getPhotoSrc(p){ return typeof p === 'object' ? p.src : p; }
+
+// ── MAPS FROM ADDRESS ─────────────────────────────────────────────────────────
+function openMapsFromAddr(){
+  var addr = document.getElementById('ms-addr').value.trim();
+  if(!addr) return;
+  window.open('https://maps.apple.com/?q='+encodeURIComponent(addr),'_blank');
+}
+
+// ── PROPERTY RESEARCH — AI + web search ──────────────────────────────────────
+async function researchProperty(){
+  var addr = document.getElementById('ms-addr').value.trim();
+  if(!addr){showToast('Enter an address first');return;}
+  var btn = document.getElementById('ms-research-btn');
+  var status = document.getElementById('ms-research-status');
+  btn.textContent = '✦ Researching...';
+  btn.disabled = true;
+  status.style.display = 'block';
+  status.textContent = '✦ Researching property history — this may take 20–30 seconds...';
+  try {
+    var res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-5',
+        max_tokens: 1000,
+        tools: [{type:'web_search_20250305',name:'web_search'}],
+        messages: [{role:'user', content: `Research this Australian property address and return ONLY valid JSON (no markdown, no preamble):
+
+Address: ${addr}
+
+Search for: year built, original owner or builder, construction materials, heritage listing status, any notable history, previous occupants, local historical context, council records, Trove newspaper archives, NSW Heritage Register if applicable.
+
+Return this exact JSON structure:
+{
+  "yearBuilt": "e.g. 1928 or c. 1920s",
+  "heritage": "listed | contributory | none | unknown",
+  "originalOwner": "name if found, otherwise empty string",
+  "origMaterials": "e.g. hardwood frame, fibrous cement, red brick",
+  "propHistory": "2-3 sentences on history, previous owners, notable events",
+  "sources": "comma-separated list of sources checked",
+  "originStory": "1-2 sentences suitable for timber provenance record"
+}`}]
+      })
+    });
+    var data = await res.json();
+    // Extract text from response (may include tool use blocks)
+    var text = (data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('').replace(/\`\`\`json|\`\`\`/g,'').trim();
+    var parsed = JSON.parse(text);
+    if(parsed.yearBuilt) document.getElementById('ms-year-built').value = parsed.yearBuilt;
+    if(parsed.heritage) document.getElementById('ms-heritage').value = parsed.heritage;
+    if(parsed.originalOwner) document.getElementById('ms-original-owner').value = parsed.originalOwner;
+    if(parsed.origMaterials) document.getElementById('ms-orig-materials').value = parsed.origMaterials;
+    if(parsed.propHistory) document.getElementById('ms-prop-history').value = parsed.propHistory;
+    if(parsed.sources) document.getElementById('ms-sources').value = parsed.sources;
+    if(parsed.originStory && !document.getElementById('ms-origin').value) document.getElementById('ms-origin').value = parsed.originStory;
+    status.textContent = '✦ Research complete — review and edit fields above';
+    status.style.background = 'rgba(122,175,138,0.12)';
+    status.style.color = '#7ab88a';
+    showToast('Property research complete ✓');
+  } catch(err) {
+    status.textContent = '✦ Could not complete research — fill in manually';
+    status.style.background = 'rgba(196,83,10,0.08)';
+    showToast('Research failed — check connection');
+  }
+  btn.textContent = '✦ Research Property';
+  btn.disabled = false;
+}
+
+// ── TAGGED PHOTO UPLOAD ───────────────────────────────────────────────────────
+function HPTagged(prefix, event){
+  if(!PP[prefix]) PP[prefix] = [];
+  Array.from(event.target.files).forEach(function(file){
+    var r = new FileReader();
+    r.onload = function(e){
+      showPhotoTagModal(e.target.result, function(tagged){
+        PP[prefix].push(tagged);
+        renderTaggedPP(prefix);
+      });
+    };
+    r.readAsDataURL(file);
+  });
+}
+
+function renderTaggedPP(prefix){
+  var el = document.getElementById(prefix+'-ph-prev');
+  if(!el) return;
+  var photos = PP[prefix] || [];
+  el.innerHTML = photos.map(function(p, i){
+    var src = getPhotoSrc(p);
+    var meta = typeof p === 'object' ? p : {};
+    return '<div style="display:flex;gap:8px;align-items:flex-start;background:var(--off-white);border-radius:10px;padding:8px;margin-bottom:8px">'
+      + '<img src="'+src+'" style="width:68px;height:68px;border-radius:7px;object-fit:cover;flex-shrink:0">'
+      + '<div style="flex:1;min-width:0">'
+      + (meta.location?'<div style="font-size:11px;font-weight:500;color:var(--ink);margin-bottom:2px">📍 '+meta.location+'</div>':'')
+      + (meta.storage?'<div style="font-size:10px;color:#888;margin-bottom:2px">📦 '+meta.storage+'</div>':'')
+      + (meta.futureUse?'<div style="font-size:10px;color:var(--forge)">→ '+meta.futureUse+'</div>':'')
+      + (!meta.location&&!meta.storage&&!meta.futureUse?'<div style="font-size:10px;color:#aaa">No tags added</div>':'')
+      + '</div>'
+      + '<div style="display:flex;flex-direction:column;gap:4px">'
+      + '<button onclick="editPhotoTag(''+prefix+'','+i+')" style="background:var(--off-white);border:1px solid var(--rule);border-radius:6px;padding:4px 8px;font-size:10px;cursor:pointer;color:var(--forge);white-space:nowrap">Edit tag</button>'
+      + '<button onclick="rmPh(''+prefix+'','+i+')" style="background:none;border:none;font-size:13px;cursor:pointer;color:#ccc">✕</button>'
+      + '</div></div>';
+  }).join('');
+}
+
+function showPhotoTagModal(src, callback){
+  var ov = document.createElement('div');
+  ov.style.cssText = 'position:fixed;inset:0;background:rgba(26,22,18,.7);z-index:500;display:flex;align-items:flex-end';
+  var inn = document.createElement('div');
+  inn.style.cssText = 'background:white;border-radius:20px 20px 0 0;width:100%;padding:20px 18px 40px;max-height:90vh;overflow-y:auto';
+
+  inn.innerHTML = '<div style="width:36px;height:4px;background:var(--sand);border-radius:2px;margin:0 auto 16px"></div>'
+    + '<div style="font-family:Cormorant Garamond,Georgia,serif;font-size:18px;margin-bottom:4px">Tag this photo</div>'
+    + '<div style="font-size:11px;color:#aaa;margin-bottom:16px">Where is it · where it's going · what it becomes</div>'
+    + '<img src="'+src+'" style="width:100%;max-height:180px;object-fit:cover;border-radius:10px;margin-bottom:16px">'
+    + '<div style="margin-bottom:12px"><label style="display:block;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#999;margin-bottom:6px">📍 Location in building</label>'
+    + '<select id="tag-location-sel" onchange="document.getElementById('tag-location-other').style.display=this.value==='Other'?'block':'none'" style="width:100%;background:var(--off-white);border:1.5px solid var(--rule);border-radius:10px;padding:10px 13px;font-family:-apple-system,sans-serif;font-size:14px;color:var(--ink);outline:none;-webkit-appearance:none;margin-bottom:6px">'
+    + '<option value="">Select location...</option>'
+    + '<option>Living room</option><option>Kitchen</option><option>Dining room</option><option>Bedroom</option><option>Hallway / Corridor</option><option>Bathroom</option><option>Laundry</option><option>Study / Office</option><option>Verandah / Deck</option><option>Garage / Shed</option><option>Roof / Rafters</option><option>Floor joists</option><option>Structural frame</option><option>External wall cladding</option><option>Internal wall lining</option><option>Staircase</option><option>Ceiling</option><option>Other</option>'
+    + '</select>'
+    + '<input id="tag-location-other" type="text" placeholder="Describe location..." style="display:none;width:100%;background:var(--off-white);border:1.5px solid var(--rule);border-radius:10px;padding:10px 13px;font-family:-apple-system,sans-serif;font-size:14px;color:var(--ink);outline:none"></div>'
+    + '<div style="margin-bottom:12px"><label style="display:block;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#999;margin-bottom:6px">📦 Storage location on property</label>'
+    + '<input id="tag-storage" type="text" placeholder="e.g. Main workshop, Blue container, Wauchope shed" style="width:100%;background:var(--off-white);border:1.5px solid var(--rule);border-radius:10px;padding:10px 13px;font-family:-apple-system,sans-serif;font-size:14px;color:var(--ink);outline:none"></div>'
+    + '<div style="margin-bottom:16px"><label style="display:block;font-size:11px;font-weight:500;letter-spacing:.08em;text-transform:uppercase;color:#999;margin-bottom:6px">→ Future use — what it will become</label>'
+    + '<input id="tag-future" type="text" placeholder="e.g. Dining table for Jones commission, Feature wall, Shelving" style="width:100%;background:var(--off-white);border:1.5px solid var(--rule);border-radius:10px;padding:10px 13px;font-family:-apple-system,sans-serif;font-size:14px;color:var(--ink);outline:none"></div>'
+    + '<button id="tag-save-btn" style="width:100%;background:var(--ink);color:var(--off-white);border:none;border-radius:12px;padding:14px;font-family:-apple-system,sans-serif;font-size:15px;font-weight:500;cursor:pointer;margin-bottom:8px">Save Photo</button>'
+    + '<button id="tag-skip-btn" style="width:100%;background:none;border:none;font-size:14px;color:#aaa;cursor:pointer;padding:8px">Save without tags</button>';
+
+  document.getElementById('tag-save-btn', inn);
+  ov.appendChild(inn);
+  document.body.appendChild(ov);
+
+  inn.querySelector('#tag-save-btn').addEventListener('click', function(){
+    var locSel = inn.querySelector('#tag-location-sel').value;
+    var locOther = inn.querySelector('#tag-location-other').value.trim();
+    var loc = locSel === 'Other' ? locOther : locSel;
+    var tagged = {
+      src: src,
+      location: loc,
+      storage: inn.querySelector('#tag-storage').value.trim(),
+      futureUse: inn.querySelector('#tag-future').value.trim()
+    };
+    ov.remove();
+    callback(tagged);
+  });
+  inn.querySelector('#tag-skip-btn').addEventListener('click', function(){
+    ov.remove();
+    callback({src: src, location:'', storage:'', futureUse:''});
+  });
+}
+
+function editPhotoTag(prefix, idx){
+  var photo = PP[prefix][idx];
+  var src = getPhotoSrc(photo);
+  var meta = typeof photo === 'object' ? photo : {src:photo,location:'',storage:'',futureUse:''};
+  showPhotoTagModal(src, function(updated){
+    PP[prefix][idx] = updated;
+    renderTaggedPP(prefix);
+  });
+  // Pre-fill fields after modal opens
+  setTimeout(function(){
+    var locSel = document.getElementById('tag-location-sel');
+    var locOther = document.getElementById('tag-location-other');
+    if(locSel && meta.location){
+      var found = Array.from(locSel.options).some(o=>o.value===meta.location);
+      if(found){ locSel.value=meta.location; } else { locSel.value='Other'; if(locOther){locOther.style.display='block';locOther.value=meta.location;} }
+    }
+    var st = document.getElementById('tag-storage'); if(st) st.value=meta.storage||'';
+    var fu = document.getElementById('tag-future'); if(fu) fu.value=meta.futureUse||'';
+  }, 100);
+}
+
+// Override HP for stock photos to use tagged version
+// (HPTagged is used directly in the onchange handler)
+
+// Override renderPP for stock to use tagged version
+var _origRenderPP = renderPP;
+function renderPP(prefix){
+  if(prefix==='ms') { renderTaggedPP(prefix); return; }
+  _origRenderPP(prefix);
+}
+
+// Override rmPh to handle tagged photos
+var _origRmPh = rmPh;
+function rmPh(prefix, i){
+  _origRmPh(prefix, i);
+  if(prefix==='ms') renderTaggedPP(prefix);
+}
+
+function exportAllData(){
+  var keys=['twr-s3','twr-sup3','twr-pro3','twr-mkr3','twr-loc3','twr-bugs'];
+  var data={};
+  keys.forEach(function(k){var v=localStorage.getItem(k);if(v)data[k]=v;});
+  var a=document.createElement('a');
+  a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(data));
+  a.download='twr-data.json';
+  document.body.appendChild(a);a.click();document.body.removeChild(a);
+  showToast('Downloaded twr-data.json');
+}
+function importAllData(){
+  var input=document.createElement('input');
+  input.type='file';input.accept='.json';
+  input.onchange=function(e){
+    var file=e.target.files[0];
+    var reader=new FileReader();
+    reader.onload=function(r){
+      try{
+        var data=JSON.parse(r.target.result);
+        Object.entries(data).forEach(function([k,v]){localStorage.setItem(k,v);});
+        showToast('Imported — reloading...');
+        setTimeout(function(){location.reload();},800);
+      }catch(err){showToast('Import failed: '+err.message);}
+    };
+    reader.readAsText(file);
+  };
+  document.body.appendChild(input);input.click();
+}
 
 function closeProject(clientId, projId) {
   var data = LD('prospects');
@@ -3570,38 +3830,6 @@ function closeProject(clientId, projId) {
   b3.onclick = function(){ ov.remove(); };
   btns.appendChild(b1); btns.appendChild(b2); btns.appendChild(b3);
   inn.appendChild(btns); ov.appendChild(inn); document.body.appendChild(ov);
-}
-
-// Keep old name as alias
-function libraryBugReport(){ goToBugs(); }
-
-function exportAllData(){
-  var keys=['twr-s3','twr-sup3','twr-pro3','twr-mkr3','twr-loc3','twr-bugs'];
-  var data={};
-  keys.forEach(function(k){var v=localStorage.getItem(k);if(v)data[k]=v;});
-  var a=document.createElement('a');
-  a.href='data:application/json;charset=utf-8,'+encodeURIComponent(JSON.stringify(data));
-  a.download='twr-data.json';
-  document.body.appendChild(a);a.click();document.body.removeChild(a);
-  showToast('Downloaded twr-data.json');
-}
-function importAllData(){
-  var input=document.createElement('input');
-  input.type='file';input.accept='.json';
-  input.onchange=function(e){
-    var file=e.target.files[0];
-    var reader=new FileReader();
-    reader.onload=function(r){
-      try{
-        var data=JSON.parse(r.target.result);
-        Object.entries(data).forEach(function([k,v]){localStorage.setItem(k,v);});
-        showToast('Imported — reloading...');
-        setTimeout(function(){location.reload();},800);
-      }catch(err){showToast('Import failed: '+err.message);}
-    };
-    reader.readAsText(file);
-  };
-  document.body.appendChild(input);input.click();
 }
 
 </script>
