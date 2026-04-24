@@ -982,7 +982,7 @@ function showSD(id){
 function advS(id){const data=LD('stock'),d=data.find(e=>e.id===id);const o=['available','reserved','in-use','complete'];d.status=o[(o.indexOf(d.status)+1)%o.length];SV('stock',data);showSD(id);showToast('Status updated')}
 function editS(id){
   const d=LD('stock').find(e=>e.id===id);if(!d)return;
-  PP.ms=d.photos||[];renderPP('ms');
+  PP.ms=(d.photos||[]).map(function(p){return typeof p==='object'?p:{src:p,location:'',storage:'',futureUse:''};});renderTaggedPP('ms');
   document.getElementById('ms-title').textContent='Edit Stock';
   document.getElementById('ms-id').value=d.id;document.getElementById('ms-type').value=d.type;document.getElementById('ms-status').value=d.status;
   document.getElementById('ms-addr').value=d.addr||'';document.getElementById('ms-struct').value=d.struct||'Residential house';document.getElementById('ms-era').value=d.era||'';document.getElementById('ms-origin').value=d.origin||'';
@@ -995,10 +995,15 @@ function editS(id){
 function saveStock(){
   const id=document.getElementById('ms-id').value||'s'+Date.now().toString(36);
   const e={id,type:document.getElementById('ms-type').value,status:document.getElementById('ms-status').value,addr:document.getElementById('ms-addr').value.trim(),struct:document.getElementById('ms-struct').value,era:document.getElementById('ms-era').value.trim(),origin:document.getElementById('ms-origin').value.trim(),yearBuilt:document.getElementById('ms-year-built').value.trim(),heritage:document.getElementById('ms-heritage').value,originalOwner:document.getElementById('ms-original-owner').value.trim(),origMaterials:document.getElementById('ms-orig-materials').value.trim(),propHistory:document.getElementById('ms-prop-history').value.trim(),sources:document.getElementById('ms-sources').value.trim(),species:document.getElementById('ms-species').value,cond:document.getElementById('ms-cond').value,dim:document.getElementById('ms-dim').value.trim(),vol:parseFloat(document.getElementById('ms-vol').value)||0,date:document.getElementById('ms-date').value,location:document.getElementById('ms-location').value,locationNotes:document.getElementById('ms-location-notes').value.trim(),proj:document.getElementById('ms-proj').value.trim(),client:document.getElementById('ms-client').value.trim(),subs:document.getElementById('ms-subs').value.trim(),notes:document.getElementById('ms-notes').value.trim(),photos:PP.ms||[],created:new Date().toISOString().split('T')[0]};
-  if(!e.addr){showToast('Please enter a source address');return;}
-  const data=LD('stock'),idx=data.findIndex(d=>d.id===id);
-  if(idx>=0)data[idx]=e;else data.push(e);
-  SV('stock',data);CM('m-stock');RS();showToast(idx>=0?'Updated':'Added');
+  if(!e.addr&&!confirm('No source address entered. Save anyway?')){return;}
+  try {
+    const data=LD('stock'),idx=data.findIndex(d=>d.id===id);
+    if(idx>=0)data[idx]=e;else data.push(e);
+    SV('stock',data);CM('m-stock');RS();showToast(idx>=0?'Updated ✓':'Saved ✓');
+  } catch(err) {
+    showToast('Save failed: '+err.message);
+    console.error('saveStock error:',err);
+  }
 }
 function delS(id){if(!confirm('Remove?'))return;SV('stock',LD('stock').filter(e=>e.id!==id));SV2('stock');RS();showToast('Removed')}
 
@@ -3658,10 +3663,10 @@ function HPTagged(prefix, event){
   Array.from(event.target.files).forEach(function(file){
     var r = new FileReader();
     r.onload = function(e){
-      showPhotoTagModal(e.target.result, function(tagged){
-        PP[prefix].push(tagged);
-        renderTaggedPP(prefix);
-      });
+      // Save photo immediately — user tags it after via Edit tag button
+      PP[prefix].push({src:e.target.result, location:'', storage:'', futureUse:''});
+      renderTaggedPP(prefix);
+      showToast('Photo added — tap Edit tag to label it');
     };
     r.readAsDataURL(file);
   });
@@ -3779,22 +3784,7 @@ function rmPhTagBtn(el){
   var prefix=el.getAttribute('data-prefix'),idx=parseInt(el.getAttribute('data-idx'));
   PP[prefix].splice(idx,1);renderTaggedPP(prefix);
 }
-// Override HP for stock photos to use tagged version
-// (HPTagged is used directly in the onchange handler)
-
-// Override renderPP for stock to use tagged version
-var _origRenderPP = renderPP;
-function renderPP(prefix){
-  if(prefix==='ms') { renderTaggedPP(prefix); return; }
-  _origRenderPP(prefix);
-}
-
-// Override rmPh to handle tagged photos
-var _origRmPh = rmPh;
-function rmPh(prefix, i){
-  _origRmPh(prefix, i);
-  if(prefix==='ms') renderTaggedPP(prefix);
-}
+// Photos for stock use HPTagged + renderTaggedPP directly
 
 function exportAllData(){
   var keys=['twr-s3','twr-sup3','twr-pro3','twr-mkr3','twr-loc3','twr-bugs'];
