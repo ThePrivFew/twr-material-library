@@ -395,7 +395,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
     </div>
   </div>
   <div class="field-row">
-    <div class="field"><label>Structure</label><select id="ms-struct"><option>Residential house</option><option>Art deco home</option><option>Farmhouse</option><option>Barn / shed</option><option>Commercial building</option><option>Bridge / wharf</option><option>Other</option></select></div>
+    <div class="field"><label>Structure</label><select id="ms-struct"><option>Residential house</option><option>Art deco home</option><option>Federation home</option><option>Victorian terrace</option><option>Farmhouse</option><option>Barn / shed</option><option>Factory / warehouse</option><option>Commercial building</option><option>Bridge / wharf</option><option>Church</option><option>School</option><option>Hotel / pub</option><option>Other</option></select></div>
     <div class="field"><label>Est. Era</label><input id="ms-era" type="text" placeholder="c. 1928"></div>
   </div>
   <div class="field"><label>Origin Story</label><textarea id="ms-origin" placeholder="e.g. Timber is late 1800s old-growth despite 1960s build..."></textarea></div>
@@ -412,6 +412,21 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
   <div class="field"><label>Sources</label><input id="ms-sources" type="text" placeholder="e.g. NSW Heritage Register, Trove, local council records"></div>
 
   <div class="modal-section">Material</div>
+  <div class="field"><label>Material Category</label>
+    <select id="ms-mat-category">
+      <option value="timber">Timber / Hardwood</option>
+      <option value="brick">Brick</option>
+      <option value="stone">Stone / Bluestone</option>
+      <option value="steel">Steel / Metal</option>
+      <option value="glass">Glass</option>
+      <option value="tiles">Tiles / Terracotta</option>
+      <option value="plaster">Plaster / Render</option>
+      <option value="concrete">Concrete</option>
+      <option value="hardware">Hardware / Fixtures</option>
+      <option value="joinery">Joinery / Doors / Windows</option>
+      <option value="other">Other</option>
+    </select>
+  </div>
   <div class="field-row">
     <div class="field"><label>Species</label><select id="ms-species"><option>Spotted Gum</option><option>Blackbutt</option><option>Ironbark</option><option>Tallowwood</option><option>Brush Box</option><option>Sydney Blue Gum</option><option>Flooded Gum</option><option>Red Mahogany</option><option>Rosewood</option><option>Likely Spotted Gum</option><option>Likely Blackbutt</option><option>Mixed Hardwood</option><option>Unknown</option></select></div>
     <div class="field"><label>Condition</label><select id="ms-cond"><option>Excellent</option><option>Good</option><option>Fair</option><option>Rough</option></select></div>
@@ -438,7 +453,7 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Helvetica Neue',sans-serif;ba
   <div class="field"><label>Project Name</label><input id="ms-proj" type="text" placeholder="e.g. River St FCD - Dining Table"></div>
   <div class="field"><label>Client</label><input id="ms-client" type="text" placeholder="Name or company"></div>
   <div class="field"><label>Sub-projects / Pieces Made</label><textarea id="ms-subs" placeholder="e.g. Dining table (complete) · 2 lengths remain for bench"></textarea></div>
-  <div class="field"><label>Notes</label><textarea id="ms-notes" placeholder="Context, remaining pieces, story..."></textarea></div>
+  <div class="field"><label>Field Notes</label><textarea id="ms-notes" placeholder="Anything notable — special finds, condition issues, quantities, legacy materials, observations on site..." style="min-height:90px"></textarea></div>
   <div class="modal-section">In-Situ Photos</div>
   <div style="font-size:11px;color:#aaa;margin-bottom:10px;line-height:1.6">Each photo is tagged: where in the building it was, where it's stored, and what it will become.</div>
   <div class="photo-upload" onclick="document.getElementById('ms-ph-in').click()" ontouchend="event.preventDefault();document.getElementById('ms-ph-in').click()"><div style="font-size:24px;margin-bottom:4px">📷</div><div style="font-size:13px;color:#aaa">Tap to add photos</div></div>
@@ -889,26 +904,115 @@ function resetM(id){
 // STOCK
 function setStockF(f,el){SF=f;document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));el.classList.add('active');RS()}
 function RS(){
-  const data=LD('stock');
-  let fl=data;
-  if(SF==='pool')fl=data.filter(d=>d.type==='pool');
-  else if(SF==='project')fl=data.filter(d=>d.type==='project');
-  else if(SF==='available')fl=data.filter(d=>d.status==='available');
-  else if(SF==='in-use')fl=data.filter(d=>d.status==='in-use');
-  else if(SF==='workshop')fl=data.filter(d=>(d.location||'').toLowerCase().includes('workshop'));
-  else if(SF==='container')fl=data.filter(d=>(d.location||'').toLowerCase().includes('container'));
+  var data=LD('stock');
+  var fl=data;
+  if(SF==='pool') fl=data.filter(function(d){return d.type==='pool';});
+  else if(SF==='project') fl=data.filter(function(d){return d.type==='project';});
+  else if(SF==='available') fl=data.filter(function(d){return d.status==='available';});
+  else if(SF==='in-use') fl=data.filter(function(d){return d.status==='in-use';});
+  else if(SF==='workshop') fl=data.filter(function(d){return (d.location||'').toLowerCase().includes('workshop');});
+  else if(SF==='container') fl=data.filter(function(d){return (d.location||'').toLowerCase().includes('container');});
+
   document.getElementById('st-total').textContent=data.length;
-  document.getElementById('st-avail').textContent=data.filter(d=>d.status==='available').length;
-  document.getElementById('st-vol').textContent=data.reduce((s,d)=>s+(parseFloat(d.vol)||0),0).toFixed(1);
-  document.getElementById('st-proj').textContent=data.filter(d=>d.type==='project').length;
-  const SL={available:'Available',reserved:'Reserved','in-use':'In Use',complete:'Complete'};
-  const list=document.getElementById('stock-list');
-  if(!fl.length){list.innerHTML=`<div class="empty"><div class="empty-icon">🪵</div><div class="empty-text">No stock here yet.<br>Tap + to add an entry.</div></div>`;return;}
-  const pool=fl.filter(d=>d.type==='pool'),proj=fl.filter(d=>d.type==='project');
-  let h='';
-  if(pool.length){if(SF==='all')h+=`<div class="stock-divider">🪵 Pool Stock <span style="color:#aaa;font-size:10px;margin-left:auto">General supply</span></div>`;h+=pool.map(d=>SC(d,SL)).join('');}
-  if(proj.length){if(SF==='all')h+=`<div class="stock-divider" style="margin-top:4px">📖 FCD Projects <span style="color:#aaa;font-size:10px;margin-left:auto">Provenance-tracked</span></div>`;h+=proj.map(d=>SC(d,SL)).join('');}
+  document.getElementById('st-avail').textContent=data.filter(function(d){return d.status==='available';}).length;
+  document.getElementById('st-vol').textContent=data.reduce(function(s,d){return s+(parseFloat(d.vol)||0);},0).toFixed(1);
+  document.getElementById('st-proj').textContent=data.filter(function(d){return d.type==='project';}).length;
+
+  var list=document.getElementById('stock-list');
+  if(!fl.length){list.innerHTML='<div class="empty"><div class="empty-icon">🪵</div><div class="empty-text">No materials yet.<br>Tap + to add your first entry.</div></div>';return;}
+
+  // Group by address (site-first)
+  var sites={};
+  fl.forEach(function(d){
+    var addr=(d.addr||'Unknown address').trim();
+    if(!sites[addr]) sites[addr]=[];
+    sites[addr].push(d);
+  });
+
+  var CAT_ICON={timber:'🪵',brick:'🧱',stone:'🪨',steel:'⚙️',glass:'🪟',tiles:'🔶',plaster:'🏗️',concrete:'🏗️',hardware:'🔩',joinery:'🚪',other:'📦'};
+  var SL={available:'Available',reserved:'Reserved','in-use':'In Use',complete:'Complete'};
+
+  var h='';
+  Object.keys(sites).forEach(function(addr){
+    var mats=sites[addr];
+    var first=mats[0];
+    var photoCount=mats.reduce(function(n,m){return n+(m.photos?m.photos.length:0);},0);
+    var totalVol=mats.reduce(function(s,m){return s+(parseFloat(m.vol)||0);},0);
+    var categories=[...new Set(mats.map(function(m){return m.matCategory||'timber';}))];
+
+    h+='<div style="margin:0 16px 16px">'
+     +'<div style="background:var(--ink);border-radius:14px 14px 0 0;padding:12px 16px;display:flex;align-items:flex-start;gap:10px">'
+     +'<div style="flex:1;min-width:0">'
+     +'<div style="font-family:Cormorant Garamond,Georgia,serif;font-size:16px;color:var(--off-white);margin-bottom:2px">'+addr+'</div>'
+     +(first.era?'<div style="font-size:10px;color:var(--sand);margin-bottom:4px">'+first.era+(first.yearBuilt?' · Built '+first.yearBuilt:'')+'</div>':'')
+     +'<div style="display:flex;gap:6px;flex-wrap:wrap">'
+     +categories.map(function(c){return '<span style="font-size:10px;padding:2px 7px;border-radius:10px;background:rgba(196,83,10,0.2);color:var(--forge)">'+(CAT_ICON[c]||'📦')+' '+c+'</span>';}).join('')
+     +'</div></div>'
+     +'<div style="text-align:right;flex-shrink:0">'
+     +'<div style="font-size:18px;font-weight:700;color:var(--forge)">'+mats.length+'</div>'
+     +'<div style="font-size:9px;color:var(--sand);letter-spacing:.06em;text-transform:uppercase">'+(mats.length===1?'material':'materials')+'</div>'
+     +(photoCount?'<div style="font-size:9px;color:var(--sand);margin-top:2px">'+photoCount+' photos</div>':'')
+     +'</div>'
+     +'</div>'
+     // Materials under this site
+     +mats.map(function(d){
+       var icon=CAT_ICON[d.matCategory||'timber']||'📦';
+       var hasPhotos=d.photos&&d.photos.length>0;
+       var firstPhoto=hasPhotos?getPhotoSrc(d.photos[0]):null;
+       return '<div style="background:white;border-left:1px solid var(--rule);border-right:1px solid var(--rule);border-bottom:1px solid var(--rule)">'
+        +(firstPhoto?'<div onclick="showSD(\''+d.id+'\')" style="cursor:pointer;position:relative">'
+          +'<img src="'+firstPhoto+'" style="width:100%;height:120px;object-fit:cover;display:block">'
+          +'<div style="position:absolute;top:8px;right:8px;background:rgba(26,20,16,.7);color:white;font-size:10px;padding:3px 8px;border-radius:10px">'+d.photos.length+' photo'+(d.photos.length>1?'s':'')+'</div>'
+          +'</div>':'')
+        +'<div style="padding:12px 14px 10px;cursor:pointer" onclick="showSD(\''+d.id+'\')">'
+        +'<div style="display:flex;align-items:flex-start;gap:8px;margin-bottom:5px">'
+        +'<span style="font-size:18px">'+icon+'</span>'
+        +'<div style="flex:1">'
+        +'<div style="font-size:14px;font-weight:500;color:var(--ink)">'+(d.species||d.matCategory||'Material')+'</div>'
+        +'<div style="font-size:11px;color:#888;margin-top:1px">'+(d.struct||'')+(d.cond?' · '+d.cond:'')+(d.vol?' · '+d.vol+'m³':'')+'</div>'
+        +'</div>'
+        +'<span style="font-size:11px;padding:3px 8px;border-radius:8px;background:var(--off-white);color:var(--forge);flex-shrink:0">'+(SL[d.status]||d.status)+'</span>'
+        +'</div>'
+        +(d.notes?'<div style="font-size:11px;color:#666;line-height:1.5;margin-top:4px;padding:8px 10px;background:var(--off-white);border-radius:7px;border-left:2px solid var(--forge)">'+d.notes.substring(0,100)+(d.notes.length>100?'...':'')+'</div>':'')
+        +(d.location?'<div style="font-size:10px;color:#aaa;margin-top:6px">📦 '+d.location+(d.locationNotes?' · '+d.locationNotes:'')+'</div>':'')
+        +'</div>'
+        +'<div style="border-top:1px solid var(--off-white);padding:8px 14px;display:flex;gap:6px">'
+        +'<button class="btn-sm" onclick="event.stopPropagation();openAddMaterialAtSite(\''+encodeURIComponent(addr)+'\')" style="font-size:11px">+ Add Material Here</button>'
+        +'<button class="btn-sm" onclick="event.stopPropagation();editS(\''+d.id+'\')" style="font-size:11px">Edit</button>'
+        +'<button class="btn-sm dark" onclick="event.stopPropagation();showSD(\''+d.id+'\')" style="font-size:11px">View</button>'
+        +'<button onclick="event.stopPropagation();if(confirm(\'Remove this material?\'))delS(\''+d.id+'\')" style="background:none;border:none;font-size:11px;color:var(--red);cursor:pointer;margin-left:auto;font-family:-apple-system,sans-serif">Remove</button>'
+        +'</div>'
+        +'</div>';
+     }).join('')
+     +'<div style="border:1px solid var(--rule);border-top:none;border-radius:0 0 14px 14px;padding:10px 14px;background:var(--off-white);display:flex;align-items:center;justify-content:space-between">'
+     +'<span style="font-size:11px;color:#aaa">'+(totalVol?totalVol.toFixed(1)+'m³ total · ':'')+(first.heritage&&first.heritage!=='unknown'?first.heritage+' · ':'')+(first.era||'')+'</span>'
+     +'<button onclick="openAddMaterialAtSite(\''+encodeURIComponent(addr)+'\')" style="background:var(--forge);color:white;border:none;border-radius:8px;padding:6px 14px;font-size:12px;font-weight:500;cursor:pointer;font-family:-apple-system,sans-serif">+ Material</button>'
+     +'</div>'
+     +'</div>';
+  });
+
   list.innerHTML=h;
+}
+
+// Open add modal pre-filled with an existing site address
+function openAddMaterialAtSite(encodedAddr){
+  var addr = decodeURIComponent(encodedAddr);
+  resetM('m-stock');
+  document.getElementById('ms-addr').value = addr;
+  document.getElementById('ms-addr-actions').style.display = 'flex';
+  // Pre-fill property history from existing entry at this address
+  var existing = LD('stock').find(function(d){return (d.addr||'').trim()===addr;});
+  if(existing){
+    if(existing.era) document.getElementById('ms-era').value = existing.era;
+    if(existing.struct) document.getElementById('ms-struct').value = existing.struct;
+    if(existing.yearBuilt) document.getElementById('ms-year-built').value = existing.yearBuilt;
+    if(existing.heritage) document.getElementById('ms-heritage').value = existing.heritage;
+    if(existing.originalOwner) document.getElementById('ms-original-owner').value = existing.originalOwner;
+    if(existing.propHistory) document.getElementById('ms-prop-history').value = existing.propHistory;
+    if(existing.sources) document.getElementById('ms-sources').value = existing.sources;
+  }
+  OM('m-stock');
+  showToast('Address pre-filled — add new material');
 }
 function SC(d,SL){return`<div class="cards"><div class="card" onclick="showSD('${d.id}')">
   ${d.photos&&d.photos[0]?`<img class="card-img" src="${getPhotoSrc(d.photos[0])}">`:`<div class="card-img-ph">${d.type==='project'?'📖':'🪵'}</div>`}
@@ -1031,6 +1135,7 @@ function saveStock(){
     const e={
       id,
       type:gvr('ms-type')||'pool',
+      matCategory:gvr('ms-mat-category')||'timber',
       status:gvr('ms-status')||'available',
       addr:gv('ms-addr'),
       struct:gvr('ms-struct')||'Residential house',
